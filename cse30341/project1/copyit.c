@@ -1,8 +1,11 @@
 /*
- *John F. Lake, Jr. 
- *CSE 30341
- *Project 1: copyit program
+ * John F. Lake, Jr. 
+ * CSE 30341
+ * Project 1: copyit program
  */
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -12,14 +15,19 @@
 #include <string.h>
 #include <signal.h>
 #include <unistd.h>
+
+
 #define NOBYTES 1024
 #define ARGER 1
 #define REAER 2
 #define WRIER 3
+
+
 //#define DEBUG 1 //Used for debugging (printing out file contents, among other things.)
 
 /*
- * Error function
+ * Error function; Uses strerror to give a more descriptive error, and the error codes 
+ * are used to let the user know if the error was during reading or writing. 
  * @param errorCode Signal corresponding to one of many error messages
  * @return void
  */
@@ -31,11 +39,13 @@ void error(int errorCode){
 			exit(1); 
 			break;
 		case REAER:
+			printf("copyit: Error reading.\n");
 			printf("copyit: %s\n",strerror(errno)); 
 			exit(1); 
 			break; 
 		case WRIER:
-			printf("copyit: Write error!\n"); 
+			printf("copyit: Error writing.\n"); 
+			printf("copyit: %s\n",strerror(errno)); 
 			exit(1); 
 			break; 
 	}
@@ -51,8 +61,19 @@ void copyStatus(int s){
 	alarm(1); 
 }
 
+/*
+ * Close the program.
+ * @param b The number of bytes copied from the source file to the destination file.
+ */
+void closeProg(int b,char* src, char* dest){
+	printf("copyit: %d bytes were copied from %s to %s\n",b,src,dest);
+}
+
+
+
 int main(int argc,char** argv){
 	alarm(1);
+	int totalBytes=0; 
 	int sp; //File descriptor for source program
 	int tp; //File descriptor for target program
 	int numBytes; //Number of bytes read or written
@@ -85,10 +106,15 @@ int main(int argc,char** argv){
 							error(REAER); 
 					}else{
 
+						//Increment the total number of bytes copied: 
+						totalBytes+=numBytes;
+
 						#ifdef DEBUG
 							//Print out results: 
 							printf("%s",buf); 
 						#endif
+
+
 						//Take the buffer and write to the other file
 						if((write(tp,buf,strlen(buf)))==-1){
 							error(WRIER); 
@@ -99,6 +125,8 @@ int main(int argc,char** argv){
 			}
 		}
 	}
+	//Deallocate memory and give a closing message to the user. 
 	free(buf); 
+	closeProg(totalBytes,argv[1],argv[2]);
 }
 
