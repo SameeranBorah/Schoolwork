@@ -1,0 +1,9 @@
+John F. Lake, Jr. 
+Lab 7 Report
+4 Nov 2013
+
+	For the second part of this project, I made five files with the inputs pre-programmed to make a variety of different scenarios.  Scene 1 shows 4 still objects. Scene 2 shows 4 oscillating objects, with a quite complicated one in the top right corner. Scene 3 shows 4 gliders moving from the middle of the board to the corners. Scene 4 shows an explosion of movement, which eventually tapers off to still and oscillating pieces, and scene 5 shows what appears to be a Gosper Glider Gun, but it fails to continue indefinitely.  
+
+	The life program itself works by obtaining user inputs to add & remove cells, quit the program, run one tick of the simulation, and to run the simulation continuously.  The program utilizes a myriad of functions, and is quite compartmentalized in this regard.  For example, the user might press a (to add a cell), and then would enter a coordinate, such as "0 4". 
+	
+	I checked to make sure that the program would output the correct simulations, and used two multi-dimensional arrays to store the current and succeeding values for the cells.  

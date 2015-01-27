@@ -1,0 +1,21 @@
+#!/bin/bash
+#John F. Lake, Jr. 
+#eparse
+#This counts the number of messages with different attributes: 
+
+#Grep to get the count of each type: 
+user=$(grep -c 'stat=User' email.log)
+sent=$(grep -c 'stat=Sent' email.log)
+def=$(grep -c 'stat=Deferred' email.log)
+disc=$(grep -c 'Discarded' email.log)
+rej=$(grep -c 'reject=' email.log)
+
+
+
+#Display to the user
+echo "Status:			Number of Messages:"
+echo "User  			$user"
+echo "Sent 		 	$sent"
+echo "Deferred 		$def"
+echo "Discarded 		$disc"
+echo "Rejected 		$rej"

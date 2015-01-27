@@ -1,0 +1,69 @@
+#!/bin/bash
+#John F. Lake, Jr. 
+#switches
+
+touch switches.tex
+echo "\documentclass{article}" > switches.tex
+echo "\begin{document}" >> switches.tex
+echo "  " >> switches.tex
+echo "Switch Script Output:" >> switches.tex
+echo "\\\\" >> switches.tex
+echo "\\\\" >> switches.tex
+
+
+sps=$(more $1 | grep 'xx' | sed 's/,.*//g')  #sps holds all of the switch ports in a string
+switchPorts=(${sps// / })   #Get the switchports in an array
+
+
+
+#Iterate through the different switch ports: 
+for word in "${switchPorts[@]}"
+do
+	
+	awk -F, -v sp=${word} '
+	{	
+		
+		if ($1 != "" && $1 != "\"Switch\""){
+			currentSP = $1
+			if (currentSP == sp){
+				print $2 $3 $4 $5 $6
+			}
+		
+		}
+		else{
+			if(currentSP == sp){
+				print $2 $3 $4 $5 $6
+			}
+		}
+		
+	}' $1  > temp   #temp holds info for ONE switch port
+	
+	
+	
+	#Here, extract information for the latex document
+	echo "Information for switch port $word" >> switches.tex
+	echo "\\\\" >> switches.tex
+	echo "\\\\" >>switches.tex
+	echo "\begin{tabular}{| l | l | l | l | l |}" >> switches.tex
+	echo "\hline" >> switches.tex
+	echo "Jack & Room & Host & MAC & Switch Port \\\\" >> switches.tex
+	
+	#Insert the stuff here 
+	sed 's/"/ /g' temp >temp2
+	sort -n -k5 temp2 > temp
+	awk '{
+		print "\\hline"
+		print $1" & "$2" & "$3" & "$4" & "$5" \\\\"
+	}' temp >> switches.tex
+	echo "\hline" >> switches.tex
+	echo "\end{tabular}" >> switches.tex
+	echo "\\\\" >>switches.tex
+	echo "\\\\" >>switches.tex
+	
+done
+
+
+echo "\end{document}" >>switches.tex
+pdflatex switches.tex
+rm temp; 
+rm temp2;

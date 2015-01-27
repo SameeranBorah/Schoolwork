@@ -1,0 +1,31 @@
+John F. Lake, Jr. 
+CSE 20211 
+Lab 2 Report
+Due 16 SEP 2013
+
+1.) table.c
+
+    	For this program, I was required to construct a multiplication table creator.  The user inputs the height and width of the table, and the computer 
+outputs a text table of the corresponding multiplication table.  I used printf to space the multiplication table, and utilized a nested loop so that I could 
+construct the table line by line.  The upper left corner of the table has an asterisk, and the right edges require new lines after them.  Other than the center
+of the table, there were a lot of cases in which I needed to specify specific cases for the program.  I tested the program by inputting various values for the width 
+and height, including 1, 0, large values, and negative values. The program cannot handle negative inputs, and I constructed a system to handle it. 
+
+2.) mortgage.c 
+
+	This is a program which displays an amortization table after the principal, interest rate, and monthly payment are given.  The program displays each monthly payment in 
+an orderly fashion, and is careful to display the last balance as $0.00, instead of a negative balance. After the table, the program displays the number of months it took 
+to pay off the balance, and the total amount paid. I used a loop and kept a count of the total payment and the current month.  The program doesn't round the way the 
+example does, but I think this is because I had float values and didn't include any sort of rounding operation.  The program handles negative inputs well through the usage of 
+conditionals, and contains a method for checking when the balance has been paid off.  I verified the program was working properly by inputting the same values given in the 
+prompt.  The values matched up accordingly. I also inputted various values that were negative, or otherwise inappropriate, and the program handled them all well.  
+
+3.) graph.c 
+	
+	For this program, I chose a variation of the sin function, similarly to the example.  The program displays a list of the x and y values on the left side, and displays a 
+graph running down along the screen.  Pound symbols are printed for each line relative to the y value at that point (A higher y value yields more "#" symbols.)  The program runs
+in a specified range and gives the function, maximum, and minimum during the program's execution.  To make the program, I made a loop which continuously evaluated the value of a 
+function, and printed the corresponding number of pound symbols; this worked rather well.  I verified the function was working well by graphing it and comparing it. 
+
+	
+

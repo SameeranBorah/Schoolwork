@@ -1,0 +1,41 @@
+John F. Lake, Jr. 
+CSE 30331
+Program 3 - Dijkstra's Algorithm
+
+***********************
+OVERVIEW & METHODS USED
+***********************
+For this assigment, I first constructed an undirected graph in graph.hpp.  The graph utilizes a nested set structure, and test_prog3 finishes in 27 seconds with all tests passing.  I wrote a small bash script to  keep the time. 
+Second, I had to make two diameter programs with two implementations of dijkstra's algorithm:
+
+	1) I took a different approach for finding the diameter in this program.  In order to make this fast, I first calculated the minimum and maximum number of neighbors a node in the undirected graph could have.  I added these as parameters to the dijikstra function, and if a node had the max amount of neighbors, I skip it.  Also, if the minimum number of neighbors is only 1 (meaning that there is a node on the edge of the graph only connected to one node), then I skip every node that has more than one neighbor. As a contingency, if all of the nodes have the same number of neighbors (like a circle), then I check every node.  
+	
+	My thought process for this was as follows: the longest distance will be between nodes that are on the edges of the graph.  If the maxium number of neighbors for a graph is 5 (which would mean that no nodes have more than 5 neighbors) and the minimum number is 2, then the nodes that would have the largest distance between other nodes would have 2 neighbors.  Similarly, if the minimum number of neighbors is 1, then it only makes sense to use Dijkstra's algorithm on the nodes that only have 1 neighbor. 
+	
+	As for the actual Dijkstra's algorithm, I used a min priority queue and pushed on nodes if their distances were ever changed.  In case a node is already in the priority queue and is visited again, I only used values off of the priority queue that had NOT been used as the variable u.  
+	
+	Using this method, I correctly ran ./diameter1 on snap.txt in 14 seconds.  This method is VERY fast when there is at least one node in the graph with only 1 neighbor.   
+
+	2) For the second implementation, I used the same idea of only looking at the edge nodes, and kept that part the same, but I used the original priority queue implementation that was included in the original diameter.cpp file.  My change to this was to update the priority after the distance was updated.  I did this by pushing the new version onto the queue.  If an old version is discovered, it is simply skipped over.  This is identical to one of the suggestions made in the program 3 document.   
+
+*********
+DIAMETERS
+*********
+netsense.txt: 7
+snap.txt: 8
+
+***************
+TIME COMPLEXITY
+***************
+
+Method 1:
+	In the worst case for this algorithm, all of the nodes are connected to each other.  In this instance, every single one will perform Dijkstra's algorithm, and they will have to iterate through every node as the neighbors. Dijkstra's Algorithm has a running time of O(E + Vlog(V)), where E is the number of edges and V is the number of vertices.  If each node is connected to all the other nodes, the running time for Dijkstra's algorithm on ONE source node is O(V((V-1)/2+log(V))).  If you perform this on all of the nodes, the running time is O(V^2((V-1)/2+log(V))).  
+	In the best case, you have a single line where there are two edge nodes with one neighbor each, and every other node has 2 neighbors. In this case, there will be V-1 edges.  For my implementation, you will only run Dijkstra's algorithm 2 times, so the running time would be O(2((V-1)+V(log(V)))).
+	On average, you will not have each node connected to all the other nodes, but you will have more than 2 edge nodes.  
+The running time would be O(K(E+Vlog(V))), where K is the number of edge nodes and E is the number of edges.  
+The experimental run time of diameter1 on snap.txt is 14 seconds. The run time of diameter1 on netsense.txt is <1 second.  
+
+
+Method 2: 
+	This case was very similar to the first method; I think that the first method does a good job of preventing unnecessary pushes onto the priority queue, but this method might have some extra ones that cause it to be a bit slower.  
+	The time complexity of this, then, would still be  O(K(E+Vlog(V))), but the coefficient K is larger.  The run time of diameter2 on netsense.txt is ~1 seconds, but the time complexity of diameter2 on snap.txt is 82 seconds.     

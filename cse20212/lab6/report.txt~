@@ -1,0 +1,26 @@
+John F. Lake, Jr. 
+CSE 20212 Lab # 6
+
+	For this lab, I constructed a sudoku solver based on my Puzzle class from lab 5.  The user simply runs main, and the program outputs 3 different puzzles: one easy, one medium, and one hard.  It will show the puzzles before and after they are solved.
+	
+	The program works by creating 3 Puzzle objects (no longer templated for this lab, as the rubric doesn't require it.)  Each object passes a certain file to the constructor, prints the puzzle, solves the puzzle, and prints the final puzzle.  The way the solver works will be discussed further in the report. 
+	
+	To verify the program, I used some online sudoku solvers with the given example puzzles.  I obtained the same output as these solvers, and performed spot checks (looking to make sure no row had two of the same #, etc) on the puzzles.  
+	
+	SOLVER: 
+What worked well: 
+	The solver works with the 3 puzzles I tried it with - easy, medium, and hard. 
+		
+What could have worked better: 
+	It definitely could be more efficient.  I feel like it does a vast number of calculations and iterations, and I'm sure there is a better way to solve the puzzle without doing nearly the same number of checks.  It isn't horrible, but with a very large puzzle I'm sure it would take a long time to solve.  
+		
+How it works:
+	A 3D vector, possMoves, contains information about which moves are valid for each space.  It represents moves that are possible with a 1, and moves that aren't possible with a 0.  Whenever a number is put into the board, this vector is updated.  
+	   
+	The solve() method contains a while loop that runs while the puzzle is not solved.  Inside of the loop, the solver moves from the top left space to the bottom right space of the puzzle, and for each space checks how many valid moves are possible.  If only one valid move is possible for a space, the method will insert the appropriate number in that space.   
+		
+	If a spot has more than one possible move, for each possible move in the spot the solve() method checks the row and column of the space to see if there are any other spaces that have the same possible move.  If NO other spot in the row can have the same number, then that number is put in the space.  
+	
+	To visualize this more easily, take this row:  | 1 | 2 | X | Y | 5 | 6 | 7 | 8 | 9 |
+	
+	Imagine that we are checking the X spot for possible values, and we obviously find that 3 and 4 are valid moves for this spot.  The method will look at the value 3 first, and will go across the row, checking if 3 is a valid move for each spot.  When it gets to Y, it perhaps finds out that Y cannot hold a 3 because there is a 3 in its column.  Because there is only one spot, X, in the row that can possibly hold a 3, the number 3 is put into X.  This works, even though X -could- possibly hold a 4 as well.  The fact that X is the only spot that can hold a 3 is what matters.  If going across the row doesn't accomplish anything, the method will go down across the column.  This works for solving easy, medium, and hard puzzles.  

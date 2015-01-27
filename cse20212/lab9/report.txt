@@ -1,0 +1,27 @@
+John F. Lake, Jr. 
+CSE20212 Lab9
+Project members: Thomas Deranek, John Lake, Garret Duffy, and Christian Clark
+Repository: shttps://github.com/tDeranek117/FundComp2-SemesterProject
+
+	For this lab, my rubric was the following:  
+		20 points: a background image to be put behind the animated sprite. 
+		30 points: boundaries at each side of the screen to prevent user movement. 
+		30 points: obstacles in the middle of the screen which prevent user movement.
+		
+	For this part of the lab, the goal was to get a tiled background image working, with collision detection between the player and the map. In order to do this, we constructed a Tile class, which holds information about each space on the background (what the space looks like, whether it can be stepped on or not, etc.) We also made a map class, which stores all of the different tiles, and is responsible for drawing the tiles on the screen.  This is how we made the background image visible. 
+	
+	In order for the player to collide with the background correctly, each tile has a value, and every time the animation update loop is run, the program will update the player's position (using the player's velocity from keyboard inputs), and will check if the player has stepped onto a tile that it shouldn't be able to step on.  If the player moves to a location he shouldn't, the program moves the player to their previous location, and sets the player's velocity to be zero.
+	
+	By laying tiles around the boundary of the screen, it is possible to create walls that prevent the user from leaving the current map.  This will be useful later when designing maps and levels.  
+	
+	We verified the changes we made by running the program, and testing whether the player could move over solid tiles or not.  The player correctly cannot move past tiles with certain "solid" values.  
+	An issue we had was that if there is a one tile gap with two solid tiles on each side, the player cannot move through the gap because of the collision detection mechanism (the player's boundary rectangle is too wide to fit.)  This could cause problems, but it is possible to design levels that never require the player to move through small passage ways. 
+	
+	[O][X][O]
+	    P        <----P is the player, X is an open tile, and O means solid tile.  The player cannot go through the X space.  
+	    
+	[O][X][X][O]
+	      P			<---This works fine, with a two-tile wide passageway, the player can move. 
+	      
+	      
+	I should receive the 30 remaining points for this lab because I have made the framework for all of the maps in the game with my group.  We have successfully made classes which we will use to make the entire world our Zelda game will use.  

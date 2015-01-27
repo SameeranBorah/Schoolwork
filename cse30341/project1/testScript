@@ -1,0 +1,15 @@
+#!/bin/bash
+#This will test my copyit program. 
+#Assumes that the file "testFile" exists.
+make clean
+make
+echo Testing small file. 
+./copyit small smallCopy
+md5sum small
+md5sum smallCopy
+
+
+echo Testing large file. 
+./copyit testFile newTestCopy
+md5sum testFile
+md5sum newTestCopy

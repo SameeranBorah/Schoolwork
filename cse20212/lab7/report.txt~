@@ -1,0 +1,34 @@
+John F. Lake, Jr. 
+CSE20212 Lab 78
+
+	1)Git Repository for final project: 
+	 Members: Thomas Deranek, Christian Clark, Garret Duffy, and John Lake 
+	 Link: 
+	 https://github.com/tDeranek117/FundComp2-SemesterProject
+
+	2) For this lab, I constructed a program which shows a sprite of Link from the Legend of Zelda, and the user can move the sprite around the screen using the arrow keys.  The program utilizes sprite animation, with different rows on a sprite sheet representing different states of the character sprite.  The program was constructed using SDL 2 and xcode, so it will not run on the Linux machines (I talked to Prof. Emrich and Cody about this - I was advised to put the program in the dropbox anyway.  If I need to demonstrate that the program compiles and works at office hours, or lab, I can do that.)
+	
+	The program works with a while loop which runs until the user exits the program.  The main.cpp file utilizes many classes, most of which are Sprite classes.  The AnimatedSprite class, which is used to depict link, updates every time the loop runs, and the state determines which row of the sprite sheet Link will be drawn from. If a user presses an arrow key, the character sprite will be given a velocity.  If the user stops pressing an arrow key, the velocity of the character sprite will be set to zero.  This will move the sprite around the screen nicely. Once the user exits the window, the program ends. 
+	
+	I verified the program by running the program and moving the sprite around extensively - the sprite moves and animates correctly in most cases, but sometimes will incorrectly change state if the user presses a directional arrow key while holding another one down (e.g: the user presses down while holding left.)
+	
+	The time log is included in a separate file, but the time log is as follows: 
+	
+	1 Hour: Lab before spring break.
+	~10 Hours: Working on Zelda xcode project over break: 
+		- SDL 2.0 Tutorials (Lazyfoo)
+		- Successful sprite animation
+		- Different classes for Sprites, Boundaries, etc. 
+		- Uses SDL 2 - will not run on the Linux machines 
+	1 Hour: Lab after spring break.
+	
+	
+	Draft rubric for next week: 80 points: 
+		20 points: a background image to be put behind the animated sprite. 
+		30 points: boundaries at each side of the screen to prevent user movement. 
+		30 points: obstacles in the middle of the screen which prevent user movement.
+	
+	3) I should get the 20 points for this lab because I completed a large number of SDL 2.0 tutorials, learned sprite animation, and went above and beyond my rubric for this lab.  I made a window in SDL 2.0, put an image on the screen, and made the image respond to user input.  I also made the sprite move with animation, which took a considerable amount of time to learn, and was above the scope of my original rubric.  
+	The program will not compile on linux machines because they do not have SDL 2.0 installed.  As stated before, I notified prof. Emrich about this.  If I need to come to office hours or need to demonstrate my lab elsewhere, I will do so.  
+	
+

@@ -1,0 +1,11 @@
+John Lake Time Log: 
+
+2.5 Hours: Meeting on Sunday
+	-Got background image working. 
+2 Hours: Monday
+	-Introduced tile system with background. 
+1 Hour: Lab
+	-Completed collision detection with background tiles. 
+1 Hour: Wednesday
+	-Successfully changed backgrounds when walking to the edge of the map. 
+

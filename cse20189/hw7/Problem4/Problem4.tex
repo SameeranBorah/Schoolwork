@@ -1,0 +1,29 @@
+\documentclass{article}
+\begin{document}
+John F. Lake, Jr. Problem4.pdf
+
+\section{Solution}
+	In the function rot13, cyphertext uses malloc to allocate memory, but the memory is never freed.  To solve this, create a pointer, char * ret, or something similar, 
+	and set it equal to cyphertext (char *ret = cyphertext).  Then, free cyphertext and return ret. This solves the memory errors. 
+\section{Debugging Output}
+\begin{verbatim}
+	While using valgrind, before I changed the code, I got the following output: 
+	==9465== HEAP SUMMARY:
+	==9465==     in use at exit: 162,816 bytes in 159 blocks
+	==9465==   total heap usage: 160 allocs, 1 frees, 163,384 bytes allocated
+	==9465== 
+	==9465== LEAK SUMMARY:
+	==9465==    definitely lost: 162,816 bytes in 159 blocks
+
+	After changing the code, I got the following: 
+	==9540== HEAP SUMMARY:
+	==9540==     in use at exit: 0 bytes in 0 blocks
+	==9540==   total heap usage: 160 allocs, 160 frees, 163,384 bytes allocated
+	==9540== 
+	==9540== All heap blocks were freed -- no leaks are possible	
+\end{verbatim}
+\section{Methodology}
+	The hint gave me a heads up to use valgrind on the program to check for memory leaks.  Because it detected definite memory leaks, I looked at the source code.
+	After changing the code so that free was used to clear up memory in the heap, the program didn't have any memory errors.  
+
+\end{document}

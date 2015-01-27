@@ -1,0 +1,1 @@
+m2s --x86-sim detailed --x86-config x86-config --evg-sim detailed --evg-config evg-config --mem-config mem-config MatrixMultiplication --load MatrixMultiplication_Kernels.bin -x 32 -y 32 -z 32 -b 8 -q

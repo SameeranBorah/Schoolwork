@@ -1,0 +1,8 @@
+all: main
+
+main: main.o 
+	g++ main.o -o main -std=c++0x
+main.o: main.cpp
+	g++ -c main.cpp -std=c++0x
+clean: 
+	rm -f *.o main; 

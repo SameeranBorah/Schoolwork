@@ -1,0 +1,12 @@
+John F. Lake, Jr. 
+
+Time Log for Lab 10:
+2 Hours: Meeting on March 30; construction of world with different areas.  
+1 Hour: April 1 Lab
+0.5 Hours: Rudimentery pause button implementation.
+3 Hours: Implementation of rolling animation. 
+1.5 Hours: Implementation of a sword animation.
+1 Hour: Debugging animations
+1 Hour: April 8 Lab
+
+

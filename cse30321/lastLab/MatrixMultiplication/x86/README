@@ -1,0 +1,7 @@
+This file shows the m2s command line appended before the target executable. The 
+command line utilizes the memory configuration present in "mem-config" and 
+the x86 configuration present in "x86-config".
+
+Note: in x86-config, "Cores" can only be set as "1 or 2 or 4"
+
+m2s --x86-sim detailed --mem-config mem-config --x86-config x86-config 

@@ -1,0 +1,75 @@
+/*
+	John F. Lake, Jr. Package.h
+	Interface for the package class. 
+*/
+
+#ifndef PACKAGE_H
+#define PACKAGE_H
+#include <string> 
+using namespace std; 
+
+class Package{
+	public: 
+		//Constructor with many default values
+		Package(string="Joe",      //To
+			string="Jim",	   //From
+			string="123 Main", //To this address
+			string="456 Main", //From this address
+			string="La Porte",  //To this city
+			string="Notre Dame", //From this city
+			string="IN", 		//To this state
+			string="IN",		//From this state	
+			int=46350,		//To this zip code
+			int=46556,		//From this zip code
+			double=1,		//Weight
+			double=5); 		//Cost Per Ounce
+			
+		//Functions which interact with the private variable members. 
+		virtual double CalculateCost();
+		double getWeight(); 
+		double getCostPerOunce(); 
+		void setShipCost(double); 
+		
+		//Accessor Methods  (To be used in composition
+		string getToName(); 
+		string getFromName(); 
+		string getToAddress(); 
+		string getFromAddress(); 
+		string getToCity(); 
+		string getFromCity(); 
+		string getToState(); 
+		string getFromState(); 
+		int getToZip(); 
+		int getFromZip(); 
+		
+		//Mutator Methods (for composition mostly
+		void setToName(string); 
+		void setFromName(string); 
+		void setToAddress(string); 
+		void setFromAddress(string); 
+		void setToCity(string); 
+		void setFromCity(string); 
+		void setToState(string); 
+		void setFromState(string); 
+		void setToZip(int); 
+		void setFromZip(int); 
+	
+	private: 
+		//Information about the sender & recipient
+		string toName; 
+		string fromName;
+		string toAddress; 
+		string fromAddress;
+		string toCity; 
+		string fromCity; 
+		string toState;
+		string fromState;  
+		int toZip; 
+		int fromZip; 
+		
+		//Info about the package:
+		double weight; 
+		double costPerOunce; 
+		double shipCost; 
+};
+#endif

@@ -1,0 +1,39 @@
+/*
+	John F. Lake, Jr.  Rational.h
+	Class interface for doing arithmetic with fractions.
+
+*/
+#include <ostream> 
+using namespace std; 
+
+class Rational{
+
+	//Overloaded operators
+	friend ostream& operator<<(ostream&, Rational &);  
+
+	public: 
+		//Constructors 
+		Rational(); 
+		Rational(int,int); 
+		
+		//Overloaded operators: 
+		Rational operator+(Rational); 
+		Rational operator-(Rational); 
+		Rational operator*(Rational); 
+		Rational operator/(Rational); 
+		Rational operator^(Rational); 
+		
+		//Arithmetic functions: 
+		void setNumbers(int,int); 
+		Rational add(Rational); 
+		Rational subtract(Rational); 
+		Rational multiply(Rational); 
+		Rational divide(Rational); 
+		Rational inverse(Rational); 
+		
+	private: 
+		//Variables and helper GCD function: 
+		int numerator; 
+		int denominator; 
+		int GCD(int,int); 
+};

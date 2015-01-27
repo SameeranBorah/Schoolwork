@@ -1,0 +1,218 @@
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=latex 2012.2.22)  13 FEB 2014 20:18
+entering extended mode
+ %&-line parsing enabled.
+**hw4.tex
+(./hw4.tex
+LaTeX2e <2005/12/01>
+Babel <v3.8h> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, arabic, basque, bulgarian, coptic, welsh, czech, slovak, german, ng
+erman, danish, esperanto, spanish, catalan, galician, estonian, farsi, finnish,
+ french, greek, monogreek, ancientgreek, croatian, hungarian, interlingua, ibyc
+us, indonesian, icelandic, italian, latin, mongolian, dutch, norsk, polish, por
+tuguese, pinyin, romanian, russian, slovenian, uppersorbian, serbian, swedish, 
+turkish, ukenglish, ukrainian, loaded.
+(/usr/share/texmf/tex/latex/base/latex209.def
+File: latex209.def 1998/05/13 v0.52 Standard LaTeX file
+
+
+          Entering LaTeX 2.09 COMPATIBILITY MODE
+ *************************************************************
+    !!WARNING!!    !!WARNING!!    !!WARNING!!    !!WARNING!!   
+ 
+ This mode attempts to provide an emulation of the LaTeX 2.09
+ author environment so that OLD documents can be successfully
+ processed. It should NOT be used for NEW documents!
+ 
+ New documents should use Standard LaTeX conventions and start
+ with the \documentclass command.
+ 
+ Compatibility mode is UNLIKELY TO WORK with LaTeX 2.09 style
+ files that change any internal macros, especially not with
+ those that change the FONT SELECTION or OUTPUT ROUTINES.
+ 
+ Therefore such style files MUST BE UPDATED to use
+          Current Standard LaTeX: LaTeX2e.
+ If you suspect that you may be using such a style file, which
+ is probably very, very old by now, then you should attempt to
+ get it updated by sending a copy of this error message to the
+ author of that file.
+ *************************************************************
+
+\footheight=\dimen102
+\@maxsep=\dimen103
+\@dblmaxsep=\dimen104
+\@cla=\count79
+\@clb=\count80
+\mscount=\count81
+(/usr/share/texmf/tex/latex/base/tracefnt.sty
+Package: tracefnt 1997/05/29 v3.0j Standard LaTeX package (font tracing)
+\tracingfonts=\count82
+LaTeX Info: Redefining \selectfont on input line 101.
+)
+\symbold=\mathgroup4
+\symsans=\mathgroup5
+\symtypewriter=\mathgroup6
+\symitalic=\mathgroup7
+\symsmallcaps=\mathgroup8
+\symslanted=\mathgroup9
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 293.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 294.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 295.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 301.
+LaTeX Info: Redefining \em on input line 311.
+
+(/usr/share/texmf/tex/latex/base/latexsym.sty
+Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
+\symlasy=\mathgroup10
+LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
+(Font)                  U/lasy/m/n --> U/lasy/b/n on input line 47.
+)
+LaTeX Font Info:    Redeclaring math delimiter \lgroup on input line 375.
+LaTeX Font Info:    Redeclaring math delimiter \rgroup on input line 377.
+LaTeX Font Info:    Redeclaring math delimiter \bracevert on input line 379.
+)
+(/usr/share/texmf/tex/latex/base/article.cls
+Document Class: article 2005/09/16 v1.4f Standard LaTeX document class
+(/usr/share/texmf/tex/latex/base/size10.clo
+File: size10.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
+)
+\c@part=\count83
+\c@section=\count84
+\c@subsection=\count85
+\c@subsubsection=\count86
+\c@paragraph=\count87
+\c@subparagraph=\count88
+\c@figure=\count89
+\c@table=\count90
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+Compatibility mode: definition of \rm ignored.
+Compatibility mode: definition of \sf ignored.
+Compatibility mode: definition of \tt ignored.
+Compatibility mode: definition of \bf ignored.
+Compatibility mode: definition of \it ignored.
+Compatibility mode: definition of \sl ignored.
+Compatibility mode: definition of \sc ignored.
+LaTeX Info: Redefining \cal on input line 506.
+LaTeX Info: Redefining \mit on input line 507.
+\bibindent=\dimen105
+) (./hw4.aux)
+\openout1 = `hw4.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 5.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 5.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 5.
+
+(/usr/share/texmf/tex/latex/base/ulasy.fd
+File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
+)
+! You can't use `macro parameter character #' in math mode.
+<recently read> ##
+                  
+l.5 CSE 20189 HW $#
+                   $3
+? 
+
+Overfull \hbox (48.74657pt too wide) in paragraph at lines 33--33
+[]\OT1/cmtt/m/n/10 7.) sed -e 's/\<pow\>/powVariable/g' -e 's/\<sqrt\>/sqrtVari
+able/g'  main.c[] 
+ []
+
+
+Overfull \hbox (1.49698pt too wide) in paragraph at lines 33--33
+[] \OT1/cmtt/m/n/10 -e '0,/OOP/s/OOP/Object Oriented Programming (&)/' TechRepo
+rt.txt[] 
+ []
+
+[1
+
+]
+! You can't use `macro parameter character #' in restricted horizontal mode.
+l.59 Port #
+           : & Connection Attempts: \\ \hline
+? 
+
+Overfull \hbox (48.74657pt too wide) in paragraph at lines 94--94
+[]\OT1/cmtt/m/n/10 I chose awk for #13 because it allows me to search for the l
+ines containing[] 
+ []
+
+
+Overfull \hbox (80.24629pt too wide) in paragraph at lines 94--94
+[] \OT1/cmtt/m/n/10 "DPT=80" or "DPT=22" and put the number oflines I find in t
+he variables x and y.[] 
+ []
+
+
+Overfull \hbox (17.24684pt too wide) in paragraph at lines 94--94
+[] \OT1/cmtt/m/n/10 awk then allows me to use printf to show the values in a ni
+ce table.[] 
+ []
+
+
+Overfull \hbox (95.99615pt too wide) in paragraph at lines 94--94
+[]\OT1/cmtt/m/n/10 The command checks for lines containing DPT=80 or DPT=22, us
+ing regular expressions,[] 
+ []
+
+
+Overfull \hbox (17.24684pt too wide) in paragraph at lines 94--94
+[] \OT1/cmtt/m/n/10 then uses flow control to increment x (number of port 80 en
+tries) or[] 
+ []
+
+
+Overfull \hbox (85.49625pt too wide) in paragraph at lines 94--94
+[]\OT1/cmtt/m/n/10 printf("(x1:%.2f),(x2:%.2f)\n",(-$2 + sqrt(det))/(2*$1),(-$2
+ - sqrt(det))/(2*$1));[] 
+ []
+
+
+Overfull \hbox (74.99634pt too wide) in paragraph at lines 94--94
+[]\OT1/cmtt/m/n/10 I chose awk for this because of the multiple number of thing
+s it can do at once.[] 
+ []
+
+
+Overfull \hbox (80.24629pt too wide) in paragraph at lines 94--94
+[]\OT1/cmtt/m/n/10 The command cycles through all lines, using : as the delimit
+er, and checks if the[] 
+ []
+
+
+Overfull \hbox (90.7462pt too wide) in paragraph at lines 94--94
+[]\OT1/cmtt/m/n/10 determinant of the a:b:c coefficient combination is positive
+.  If it isn't, it will[] 
+ []
+
+
+Overfull \hbox (32.9967pt too wide) in paragraph at lines 94--94
+[]\OT1/cmtt/m/n/10 print "NaN:NaN"; if it is, it will print the resulting roots
+, x1 and x2.[] 
+ []
+
+[2] (./hw4.aux) ) 
+Here is how much of TeX's memory you used:
+ 342 strings out of 256217
+ 3788 string characters out of 1917095
+ 51804 words of memory out of 1500000
+ 3684 multiletter control sequences out of 10000+200000
+ 9903 words of font info for 37 fonts, out of 1200000 for 2000
+ 645 hyphenation exceptions out of 8191
+ 19i,6n,21p,165b,223s stack positions out of 5000i,500n,6000p,200000b,15000s
+
+Output written on hw4.dvi (2 pages, 3392 bytes).

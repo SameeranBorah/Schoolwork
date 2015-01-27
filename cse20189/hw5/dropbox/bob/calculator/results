@@ -1,0 +1,20 @@
+Results for bob calculator script:
+Input file: /afs/nd.edu/coursesp.14/cse/cse20189.01/files/hw5/calc
+ARGS: 1129 3100 +
+ARGS: -19 6 +
+ARGS: 9 3 -
+ARGS: -7 6 -
+ARGS: 9 3 /
+ARGS: 4 8 /
+ARGS: 35 6 /
+ARGS: 12 3 %
+ARGS: 13 3 %
+ARGS: 4 19 %
+ARGS: 11 9 x
+ARGS: 4294967296 1024 x
+ARGS: -9 7 x
+ARGS: 1024 0 /
+ARGS: 14 63 <<
+ARGS: 1234 5678 >>
+ARGS: 1 2 3
+Testing complete for bob

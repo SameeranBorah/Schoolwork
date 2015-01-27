@@ -1,0 +1,64 @@
+\documentclass{article}
+\begin{document}
+\begin{itemize}
+\item John F. Lake, Jr. 
+\item CSE20189 Final Exam
+\item This is an overview of the different scripting languages we have learned.
+\end{itemize} 
+\section{Bash}
+\subsection{Overview}
+Bash is the Bourne Again Shell.  It can be used interactively, or can be programmed.  It is an alternative to sh, csh, and ksh for Unix users, and is the default shell on Linux and Mac OS X.
+\subsection{Pros}
+\begin{itemize}
+\item Bash has lots of features.
+\item It has Unicode support.
+\item It's very easy to perform shell commands.
+\end{itemize}
+\subsection{Cons}
+\begin{itemize}
+\item Bash has awkward syntax.
+\item There is a steep learning curve.
+\end{itemize}
+\section{Csh}
+\subsection{Overview}
+Csh is the C-Shell.  It is a shell that resembles the C language more than other scripting language, and is available on a wide number of operating systems. 
+\subsection{Pros}
+\begin{itemize}
+\item It has straightforward syntax. 
+\item It is easier to learn than bash. 
+\item It has easy acess to shell commands, and scripting is simple. 
+\end{itemize}
+\subsection{Cons}
+\begin{itemize}
+\item It isn't as powerful as bash. 
+\item Control structure doesn't work quite as expected all the time. 
+\end{itemize}
+\section{Perl}
+\subsection{Overview}
+Perl, the practical extraction and report language, is a scripting language that has object oriented support, and many features. It is higher level, and is more similar to a programming language such as C than a scripting language such as bash. 
+\subsection{Pros}
+\begin{itemize}
+\item	Easy to utilize unix shell commands in scripts. 
+\item	OOP is supported. 
+\item 	Many external modules with additional commands. 
+\end{itemize}
+\subsection{Cons}
+\begin{itemize}
+\item	Can be incredibly obfuscated. 
+\item	OOP is very difficult to use. 
+\end{itemize}
+\section{Python}
+Python is very similar to Perl, and has many features.  It is a scripting language that also has object oriented support. 
+\subsection{Overview}
+\subsection{Pros}
+\begin{itemize}
+\item	Python is very easy to learn. 
+\item	The syntax requires proper indentation, so code looks tidy.  
+\item	Robust collection of libraries and support. 
+\end{itemize}
+\subsection{Cons}
+\begin{itemize}
+\item	Executing unix commands is quite difficult. 
+\item	Syntax is hard to get used to after learning C languages. 
+\end{itemize}
+\end{document}

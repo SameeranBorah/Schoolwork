@@ -1,0 +1,16 @@
+John F. Lake, Jr. 
+Lab 4 - Due 30 SEP 2013 
+
+	For the last program, my goal was to create a ride which consisted of 6 parts: the central wheel, 10 length-shifting 
+pistons protruding from the wheel, a rod swinging from the end of those pistons, a stick attached perpindicular to the swinging rod, 
+which shifts in length, spinning rods attached to each end of the shifting stick, and circles, denoting passenger carts, attached 
+to those spinning rods.  
+
+	The difficulty in making this program came from the calculations involving the angles for the rods - I had to compute angles relative to 
+other, changing angles, so it was definitely cumbersome.  The program works correctly - the user sees all of the aforementioned parts moving with a 
+speed that varies from slow to fast, and the user can exit the program instantly by pressing the key 'q'. Functions were used in producing each part 
+of the program, and each function calls the functions of the parts that are attached to their repective part. 
+  
+
+	To check the program, I ran it after I added each subsequent part, to ensure that the locations were correct, and then proceeded step by 
+step with each additional piece, knowing that the reference points from the previous points were correct. After finishing the program, I ran it continuously to see if any unexpected errors would come about from a longer run.  After extensive running, I concluded that the program was ready. 

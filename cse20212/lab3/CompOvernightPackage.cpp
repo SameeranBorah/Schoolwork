@@ -1,0 +1,36 @@
+/*
+	John F. Lake, Jr.  CompOvernightPackage.cpp
+	Implementation for the CompOvernightPackage class (composition)
+*/
+#include "Package.h" 
+#include "CompOvernightPackage.h"
+#include <iostream> 
+
+//Constructor
+CompOvernightPackage::CompOvernightPackage(double eC){ //Checks if the extra cost per ounce is reasonable
+	if(eC>=0){
+		extraCostPerOunce= eC; 
+	}
+	else{
+		extraCostPerOunce = 0; 
+		cout<<"The extra fee cannot be negative!"<<endl; 
+	}
+}
+//Accessor method to get the extra cost per ounce 
+double CompOvernightPackage::getExtraCostPerOunce(){
+	return extraCostPerOunce; 
+}
+
+//Calculate the cost for the package, using the original method AND the extra cost per ounce 
+double CompOvernightPackage::CalculateCost(){
+	double cost = packageData.Package::CalculateCost(); //Call the base class method with the Package object
+	cost+= packageData.getWeight()*getExtraCostPerOunce(); 
+	return cost; 
+}
+
+
+	//Tests that the composition is working. 
+void CompOvernightPackage::print(){
+	cout << "This overnight package is going to " << packageData.getToAddress() << " and will cost $"<< CalculateCost()<<endl;
+}
+

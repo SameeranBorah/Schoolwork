@@ -1,0 +1,27 @@
+John F. Lake, Jr. 
+CSE20212 Lab # 5
+Sudoku Game
+
+	For this lab, I created a Puzzle class, which uses templating so that a sudoku game can have both character and integer inputs.  The way the user interacts with the program is simple.  The program first displays 3 puzzles of different types using the templated Puzzle class.  The types of puzzles displayed are 4x4 integer, 9x9 integer, and 4x4 character.  
+	Once this is finished, the program starts an interactive mode where the program will print a puzzle to solve, and the user can input values by typing a row, a column, and a value, separated by spaces.  This mode will run until the user completes a puzzle.  The first puzzle this mode uses, a 4x4 integer puzzle, is already solved, so the program tells the user they are done immediately (This verifies that the program can correctly tell if a puzzle is finished.  The next puzzle is an unsolved 9x9 puzzle, and this will show that the input system only works with valid sudoku inputs.  If the user takes the time to actually solve the puzzle, it will output a message that they are finished, and will end.  
+	
+	The program works by using a templated Puzzle class, which uses a 2D vector system to store either integers or characters for inputs.  The driver file initially makes 3 puzzle objects of different sizes and types, but uses the same class to initialize all of them.  The program then prints them to the user, and continues to the game mode. 
+	The Puzzle class checks for valid inputs by first checking to see if the value inputted can ever be on the board (if the value is more than the size of the board, it is invalid, and if it is negative, it is invalid.) The program then checks to see if the value is valid in the given row, column, and minisquare.  It simply iterates through the spaces and checks if the same value is present anywhere in these 3 areas.  The user cannot erase previous inputs, so if a user messes up badly, it is possible that the program will run until a user uses CTRL-C to exit.  
+	
+	I checked that the program worked correctly by constructing a variety of cout statements in the 3 "checking" functions that would show where the program is checking for valid inputs (to make sure the correct row, column, and mini-square were checked for 4x4 and 9x9 integer puzzles).  After checking this, I used a variety of puzzles and checked to make sure that all of my inputs were correct.  This helped very much with debugging, and after a while everything worked smoothly.  
+	
+	The program works well with checking for valid input, and also does work for character inputs as well.  It does what it is supposed to with regard to checking if a puzzle is solved, and playing an interactive game with the user.  The program did not check for invalid puzzles (if a puzzle is altered to the point that it is unsolvable, it will not know to check for that), as the user can only put in values, and cannot remove them. 
+	 
+	To make the Puzzle class work with both integers and characters, I created multiple functions for specific "types" of the Puzzle object.  For example, there are 2 different implementations of the print() function - one for the int version, and one for the char version.  
+	
+	The way the program checks for user input in the rows and columns is simple - it checks for other instances of the given input in the row or column.  The way the program checks the mini-squares is a bit more complex.  The program determines the mini-square size by taking the square root of the size of a board row.  Once this is determined, the program determines the "starting" row and column of each mini square by dividing the row and column of the space checked by the square size, and multiplying by that square size: 
+	If you are row 3, column 4 of a 9x9 puzzle (where 0,0 is the first row,column), your mini-square start row is 3 (3/3=1; 1*3=3), and your mini-square start column is 3 (4/3=1;1*3=3).  Essentially you are in the central mini-square, and the program will check every value in this mini-square to see if your input is valid. 
+	
+	
+	
+	
+	
+	
+	
+	
+	

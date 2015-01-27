@@ -1,0 +1,13 @@
+John F. Lake, Jr. 
+CSE20189 Midterm
+commands.txt
+
+1.) echo $SHELL
+
+2.) my_solver &
+
+3.) fg %4
+
+4.) kill 2
+
+5.) !1059

@@ -1,0 +1,21 @@
+John F. Lake, Jr. 
+3 SEP 2013
+Fundamentals of Computing I Lab 1
+
+	For this lab, I constructed 3 programs.  The first program simply
+states "Welcome to C!"; the second program tells the score of a football team
+given their TD's, safeties, field goals, and extra points; and the third program
+gives the force between 2 objects of distance r and masses m1 & m2.
+
+	This program essentially reduces the amount of work that the user 
+would have to do using the gravitational force equation. The program is 
+structured into a few parts.  The first part is where all of the variables are 
+declared, the second part is where the user gives the necessary inputs for the 
+masses and the distance, and the third part is where the calculations take
+place and the force is displayed.   
+
+	To evaluate the program, I put a series of test printf commands to 
+ensure that the data was being passed to the variables correctly. After this, I 
+used a calculator on the internet to verify that every calculation was working
+correctly.  I verified that it produces results correctly, and there are no 
+cases in which the results are false. 

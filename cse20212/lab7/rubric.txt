@@ -1,0 +1,9 @@
+John F. Lake, Jr. 
+CSE 20212 Lab 7
+Rubric: 
+
+20 Total Points: 
+
+5 Points: Get a window set up with SDL. 
+10 Points: Get shapes/ pictures in the window. 
+5 Points: Receive user input/move shapes in the window. 

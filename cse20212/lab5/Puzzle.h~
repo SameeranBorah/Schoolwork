@@ -1,0 +1,218 @@
+/*
+	John F. Lake, Jr.  Puzzle.h 
+	Interface/Implementation for the puzzle templated class
+*/
+
+#ifndef PUZZLE_H
+#define PUZZLE_H
+#include <fstream> 		//Used for file I/O
+#include <sstream>		//Used to parse lines for input
+#include <iterator>		//Used for printing
+#include <string>		
+#include <cstdlib>		
+#include <iostream> 		//Simple I/O
+#include <vector> 		//Contains Puzzle info
+#include <cmath>		//Used for sqrt
+using namespace std; 
+
+
+//Class declaration
+template <typename T> 
+class Puzzle{
+	public: 
+		Puzzle(string="puzzle1.txt"); 	//Default constructor
+		void getInfo(string); 		//Gets the file for the puzzle object
+		void print(); 			//Prints the puzzle line by line
+		int isValid(int,int,int);	//Checks if a certain move is valid
+		int checkSquare(int,int,int); 	//Checks if a move violates any number in the mini-square it resides in
+		int checkRow(int,int); 		//Checks if the same number is in the row
+		int checkColumn(int,int); 	//Checks if the same number is in the column
+		void placeNumber(int,int,int); 	//Places the number in the square provided.  Calls isValid(). 
+		int isSolved();			//Checks if the board is completed.
+	private: 
+		vector< vector<T> > board; 
+		string puzzle_file;  
+};
+
+
+
+
+
+
+//Constructor - works for chars and ints. 
+template <typename T>
+Puzzle< T >::Puzzle(string f){
+	puzzle_file = f; 
+	getInfo(puzzle_file);
+}
+
+
+//Specific method for handling integer inputs
+template<>
+void Puzzle<int>::getInfo(string file){
+	string line;  					//line is used with sstream to parse for input on each line. 
+	ifstream myFile; 				//input file stream 
+	myFile.open(file.c_str(), ifstream::in); 	//Open the file					
+	if (myFile.is_open()){				//If the file opens properly
+		while(getline(myFile,line)){		//While there is another line to grab, get it, and parse it. 
+			vector<int> thisLine;  
+			int n; 			
+			istringstream iss(line); 	
+			while(iss >> n){
+				thisLine.push_back(n); 	//Push back the inputs to the vector thisLine
+			}	
+			board.push_back(thisLine); 	//Push back the line into the 2D board vector.  
+		}
+		myFile.close();				//Close the file/ 
+	}
+	else{
+		cout << "Error: File did not open properly."<<endl; //Print error message if file doesn't open.
+	}
+}
+
+
+//Specific method for handling character inputs - same way the integer method works; just uses chars instead.  
+template<>
+void Puzzle<char>::getInfo(string file){ 
+	string line; 
+	ifstream myFile; 	
+	myFile.open(file.c_str(), ifstream::in); 				
+	if (myFile.is_open()){						
+		while(getline(myFile,line)){	
+			vector<char> thisLine;  
+			char n; 			
+			istringstream iss(line); 	
+			while(iss >> n){
+				thisLine.push_back(n); 
+			}	
+			board.push_back(thisLine); 		
+		}
+		myFile.close();
+	}else{
+		cout << "Error: File did not open properly."<<endl; //Print error message if file doesn't open.
+	}
+}
+
+
+//Print function for characters
+template<> 
+void Puzzle<char>::print(){  
+	//Cycle through line by line, and then value by value 
+	for(vector< vector<char> >::iterator outer = board.begin(); outer != board.end(); outer++){  //Outer vectors (vector of rows)
+		vector<char> currentLine = *outer; 
+		for(vector<char>::iterator inner = currentLine.begin(); inner != currentLine.end(); inner++){ //inner vector (vector of chars)
+			cout << *inner; 
+		}
+		cout << endl; 
+	}
+	cout << endl; 
+}
+
+//Same concept as above- for int inputs.  
+template<> 
+void Puzzle<int>::print(){  
+	//Cycle through line by line, and then value by value
+	cout << endl << endl; 
+	for(vector< vector<int> >::iterator outer = board.begin(); outer != board.end(); outer++){
+		vector<int> currentLine = *outer; 
+		for(vector<int>::iterator inner = currentLine.begin(); inner != currentLine.end(); inner++){
+			cout << *inner; 
+		}
+		cout << endl; 
+	}
+}
+
+
+
+//Below are methods used solely for ints - these are used for gameplay
+
+
+//Checks to see if input val is valid in row r. 
+template <>
+int Puzzle<int> :: checkRow(int r, int val){
+	for (int i = 0; i< board[r].size();i++){	   //Cycle through the row, from 0 to size-1. 
+		if (board[r][i] == val){		   //If there is another input that is the same, return false. 
+			return 0; 
+		}
+	}			
+	return 1; 					//Otherwise, return true. 
+}
+
+
+//Checks to see if input val is valid in column c.
+template <>
+int Puzzle<int> :: checkColumn(int c,int val){
+	for (int i = 0; i< board[0].size();i++){	//Cycle through the column, from 0 to size-1
+		if (board[i][c] == val){		//If another input is the same on the column, return false. 
+			return 0; 
+		}
+	}
+	return 1; 					//Otherwise, return true.  
+}
+
+
+//Checks to see if input val is valid in the mini square r,c resides in: 
+template <>
+int Puzzle<int> :: checkSquare(int r, int c, int val){
+	int sqSize = sqrt(board[0].size());     //3 for a 9x9, 2 for a 4x4, etc
+	int startC = sqSize * (c / sqSize); 	//c and r divided by the sqSize times sqSize will give the mini square start point
+	int startR = sqSize * (r / sqSize); 	//This start point, for a 9x9 square, would be 0, 3, or 6.   (4x4: 0,2)
+	
+	for(int i = startR;i< startR + sqSize;i++){ 		
+		for(int j = startC; j < startC+sqSize;j++){
+			if(board[i][j] == val) return 0; 		//If there's another value that is the same, return false. 
+		}
+	}
+	return 1; 	//Otherwise, return 0.  
+}
+
+
+
+//Checks if a space or value is valid as an entry: 
+template<>
+int Puzzle<int>::isValid(int row, int col, int val){
+	if((row > board[0].size()-1) || (col > board[0].size()-1)) return 0;  //If a place is outside of the board, it's not valid
+	if((val > board[0].size()) || (val<0)) return 0; 		 	//If a value is inappropriate, return 0 
+
+	if(board[row][col] == 0){ //If there is nothing in the spot, then a number can be placed: 
+		if(!(checkRow(row,val))) return 0; 			//Checks if the value is in the row
+		if(!(checkColumn(col,val))) return 0;  		//Checks the column
+		if(!(checkSquare(row,col,val))) return 0;	//Checks the square. 
+	}
+	else{
+		return 0; 	//If there's already a number in the spot, return 0
+	}
+ 
+	return 1; 
+}
+
+
+
+
+
+//Easily place a number in any spot (r,c)
+template <> 
+void Puzzle<int>:: placeNumber(int r, int c, int val){
+	if (isValid(r,c,val)){
+		cout << "Valid entry."<<endl;
+		board[r][c] = val; 
+	}else {
+		cout << "Invalid entry."<<endl; 
+	
+	}
+}
+
+
+
+//If none of the spaces are zero, then it is a finished game.  
+template <>
+int Puzzle<int> :: isSolved(){
+	for (int i=0;i<board[0].size();i++){
+		for(int j = 0;j<board[0].size();j++){
+			if (board[i][j]==0) return 0; 
+		}
+	}
+	return 1; 
+}
+#endif
+

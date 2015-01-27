@@ -1,0 +1,14 @@
+John F. Lake, Jr. 
+CSE20212
+Lab #4
+
+	For this lab, I was required to first make a palindrome program, PalindromeTest.cpp, which takes integer inputs from the user, inserts them into a vector, and checks whether this vector is a palindrome or not. The second part of this lab, I created a card deck class, CardDeck.h, which holds information about a deck of cards.  You can use functions such as deal() and shuffle() to manipulate the cards, and the << operator is overloaded so that the user can print the contents of the deck easily to the standard output.
+	I made a DeckTest.cpp file, which takes a card object and checks it to make sure that the class works properly.  It initializes a deck object with the default constructor, prints the output using the overloaded << operator, shuffles the deck, and prints the new order with the << operator.  I used srand() to make sure that the shuffling was different every time.  
+	
+	For the final part of the lab, I made a blackjack game, using the CardDeck class.  The program initializes a card deck object, using pointers so that the program can simulate bringing a new deck in with the new keyword.  The program then deals a card to the user, and asks the user whether he/she wants to hit or stand, and repeats until the user enters the command to stand.  If the user hits and the value of the user's hand goes above 21, the user instantly loses with a bust.  
+	Once the user stands, the program shows the progression of the dealer's hand, and shows the dealer hitting until the hand has a value above 17.  Once this is completed, the program checks if the dealer busted, and determines who won the hand.  The program keeps a running count of wins, and if the user states that they do not want to play another hand, the program will display the number of wins for the user and the dealer, and will close.  
+	
+	The blackjack  game works by taking the card deck object, and manipulating it (using shuffle, deal, etc) in order to acquire the desired outcome.  The main function of the program first determines the player's hand, and asks the player for input using cin, and then once the player is done a loop runs and determines the final value of the dealer's hand.  The program simply compares the values, and determines who wins the game.  
+	I used a fuction to convert the card number (0-13) to a certain type of card (Ace, King, etc.) with a numeric value. 
+	
+	I verified the program by checking the card deck class using DeckTest.cpp, which tests the shuffling of the deck. 

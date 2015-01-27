@@ -1,0 +1,1 @@
+m2s --x86-sim detailed --x86-config x86-config --mem-config mem-config ScanLargeArrays --load ScanLargeArrays_Kernels.bin -q -x 10000 --device cpu

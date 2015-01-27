@@ -1,0 +1,54 @@
+/*
+	John F. Lake, Jr. Puzzle.cpp
+	Implementation for the Puzzle class. 
+*/ 
+
+#include "Puzzle.h"
+#include <fstream> 
+#include <iterator>
+#include <string>
+#include <iostream> 
+#include <vector> 
+using namespace std; 
+
+
+template <typename T>
+Puzzle< T >::Puzzle(string file){
+	cout << "This shit works!"; 
+	string l = file; 
+	ifstream myFile; 	
+	myFile.open(file.c_str(), ifstream::in); 				
+	if (myFile.is_open()){						
+		while(myFile.good()){	 			
+			string line;  					
+			vector<T> thisLine; 			 
+			getline(myFile,line);			
+			for(int i = 0;line[i];i++){
+				if(is_same<T,int>{			
+					thisLine.push_back(line[i]-'0');  
+				}else{
+					thisLine.push_back(char(line[i]));
+				}
+			}
+			board.push_back(thisLine); 			
+		}
+		myFile.close();
+	}
+}
+
+template <typename T> 
+void Puzzle< T >::print(){  
+	//Cycle through line by line, and then int by int
+	for(typename vector< vector<T> >::iterator outer = board.begin(); outer != board.end(); outer++){
+		vector<T> currentLine = *outer; 
+		for(typename vector<T>::iterator inner = currentLine.begin(); inner != currentLine.end(); inner++){
+			cout << *inner << " "; 
+		}
+		cout << endl; 
+	}
+}
+
+
+
+
+

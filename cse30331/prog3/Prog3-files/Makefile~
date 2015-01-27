@@ -1,0 +1,16 @@
+CPPFLAGS=-I/opt/local/include -g
+
+all: test_prog3 diameter 
+
+test_prog3: test_prog3.o
+	g++ $^ -o $@
+
+test_prog3.o: test_prog3.cpp graph.hpp
+
+diameter: diameter.o
+	g++ $^ -o $@
+
+diameter.o: diameter.cpp graph.hpp
+
+clean:
+	rm -f *.o test_prog3 diameter

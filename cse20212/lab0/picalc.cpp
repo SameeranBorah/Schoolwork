@@ -1,0 +1,51 @@
+/*
+	John Lake, picalc.cpp
+	This program will calculate the value of pi given a specific number of terms: 
+	π = 4 – 4/3 +4/5 - 4/7 + 4/9 – 4/11 + 4/13 - ...
+*/
+
+#include <iostream> 
+#include <iomanip> 
+
+using namespace std; 
+
+
+//Function used to take a number of terms n and use it to calculate pi. 
+void calcPi(int n){
+	float pi= 0; 
+	
+	//Main loop for calculating pi: 
+	for(int i=0; i<n; i++){  			//The first term is the 0th term. 
+		if(i%2==0){  				//if it is an even term, add it to pi.  (0,2,4,etc.) 
+			pi+= 4.0/(2*i+1); 	
+		}else{
+			pi-= 4.0/(2*i+1); 		//if it is odd, subtract it from pi.  (1,3,5,etc.) 
+		}
+		cout << "Estimate after " << i+1 << " terms: "<< std::setprecision(4) << pi << endl; 
+	}
+	
+}
+
+//Function used to get the number of terms from the user.  Checks if n>=2 
+int getTerms(int * numTerms){
+	
+	cout << "Enter the number of terms in the series for the calculation of pi.\n"; 
+	
+	//Put the input into the numTerms variable; if it is less than 2, do it again.  
+	do{
+		cin >> *numTerms; 
+		if(*numTerms<2) cout << "ERROR: You entered fewer than 2 terms. Enter a valid number:\n"; 
+	}
+	while(*numTerms<2);
+	
+}
+
+
+//Simple Main Function
+int main(){
+
+	int numTerms=0;       //# of terms used to calculate pi; initially zero.  
+	getTerms(&numTerms);  //Get the number of terms from the user. 
+	calcPi(numTerms);     //Calculate pi from the given number of terms. 
+
+}

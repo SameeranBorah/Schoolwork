@@ -1,0 +1,7 @@
+John F. Lake, Jr. 
+CSE 20211 
+Lab 8 Report
+11 November 2013
+
+	For the synthesizer part of the lab, I played around with a variety of different methods to get a feel for what each one did; I altered the sin function, used other functions, added harmonics, etc, until I found a sound that I felt I could develop.  I found that adding multiple sin functions together resulted in the sort of sound I desired - a retro video game style sound (like Game & Watch Gallery).  
+	To recreate a similar style to the sound used in some retro video games, I decided to remove some of the data to make the sounds more abrupt.  To do this, I set an offset as one sixth of the usual number of data samples in a note, and cut this off of both sides of each note.  This results in a "tick" noise which sounds very similar to some G&W generation video game music.

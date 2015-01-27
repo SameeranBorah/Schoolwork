@@ -1,0 +1,11 @@
+PROJ = rectangle
+OBJECTS = Point.o Rectangle.o main.o
+CXX :=c++
+CXXFLAGS :=-g
+
+$(PROJ): $(OBJECTS)
+	$(CXX) $(OBJECTS) -o $(PROJ)
+
+clean: 
+	rm -f *.o $(PROJ)
+

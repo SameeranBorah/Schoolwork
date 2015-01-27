@@ -1,0 +1,22 @@
+echo "\\documentstyle{article}" > sedge.tex
+echo "\\begin{document}" >> sedge.tex
+echo "\\begin{tabular}{| l | l | l | l |}" >> sedge.tex
+awk -F"," '{outfile = "sedge.tex"; print $1,"&",$2,"&",$3,"&",$4,"\\\\" >> outfile}' /afs/nd.edu/courses/cse/cse20189.01/files/midterm/sedge.csv
+echo "\\end{tabular}" >> sedge.tex
+echo "   " >> sedge.tex
+echo "\\vspace{10 mm}" >> sedge.tex
+
+echo "\\begin{tabular}{| l | l | l | l |}" >> sedge.tex
+echo "Population: & Avg. Shoot Width: & Avg. Shoot Volume: & Avg. Shoot Diameter: \\\\" >> sedge.tex
+
+awk -F"," 'BEGIN{outfile="sedge.tex";} /Louisiana/ {n+=1;w+=$2;v+=$3;d+=$4;} END {printf("Louisiana & %.2f & %.2f & %.2f \\\\",w/n,v/n,d/n)>>outfile }' /afs/nd.edu/courses/cse/cse20189.01/files/midterm/sedge.csv  
+awk -F"," 'BEGIN{outfile="sedge.tex";} /New Jersey/ {n+=1;w+=$2;v+=$3;d+=$4;} END {printf("New Jersey & %.2f & %.2f & %.2f \\\\",w/n,v/n,d/n)>>outfile }' /afs/nd.edu/courses/cse/cse20189.01/files/midterm/sedge.csv
+awk -F"," 'BEGIN{outfile="sedge.tex";} /Texas/ {n+=1;w+=$2;v+=$3;d+=$4;} END {printf("Texas & %.2f & %.2f & %.2f \\\\",w/n,v/n,d/n)>>outfile }' /afs/nd.edu/courses/cse/cse20189.01/files/midterm/sedge.csv
+awk -F"," 'BEGIN{outfile="sedge.tex";} /Maryland/ {n+=1;w+=$2;v+=$3;d+=$4;} END {printf("Maryland & %.2f & %.2f & %.2f \\\\",w/n,v/n,d/n)>>outfile }' /afs/nd.edu/courses/cse/cse20189.01/files/midterm/sedge.csv
+awk -F"," 'BEGIN{outfile="sedge.tex";} /Old Maryland/ {n+=1;w+=$2;v+=$3;d+=$4;} END {printf("Old Maryland & %.2f & %.2f & %.2f \\\\",w/n,v/n,d/n)>>outfile }' /afs/nd.edu/courses/cse/cse20189.01/files/midterm/sedge.csv
+echo "\\end{tabular}" >> sedge.tex
+echo "\\end{document}" >> sedge.tex
+
+
+
+

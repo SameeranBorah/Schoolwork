@@ -1,0 +1,20 @@
+#ifndef MORTGAGE_H
+#define MORTGAGE_H
+
+class Mortgage {
+
+	private: 
+		double Principal; 
+		double Rate; 
+		double Payment; 
+	public: 
+		Mortgage(); 
+		Mortgage(double principal, double rate, double payment); 
+		void credit(double value); 
+		void amortize(); 
+		double getPrincipal(); 
+};
+
+
+#endif
+

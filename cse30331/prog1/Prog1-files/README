@@ -1,0 +1,36 @@
+John F. Lake, Jr. 
+CSE 30331
+Programming Assignment #1: Reverse Polish Notation Calculator
+
+For this assignment, I changed or made a total of 3 files:
+-stack.h  
+-calc.cxx
+-ccalc.cxx
+	
+stack.h: 
+For this file, I implemented templated types, so that different objects could be pushed onto the stack.  This was an easy fix; I simply 
+prefaced the class definition with the template definition, and I replaced all of the specific variables with generic types. 
+
+Next, I implemented the stack functions using the <list> data structure supplied by the STL as a single private data member. 
+I implemented these functions and the constructor: 
+
+stack(), which initializes the stack and makes sure it's empty.  
+empty(), which returns if the stack is empty. 
+push(T x), which adds a value to the top of the stack.
+pop(), which gets rid of the top member of the stack.
+top(), which returns the top member of the stack.  
+
+calc.cxx: 
+For this file, I only added a square root option, which takes the square root of the item at the top of the stack.  
+If the number is negative, an error message is thrown. 
+
+ccalc.cxx:
+For this file, I copied the content of calc.cxx and made it accessable with complex numbers.  
+
+I replaced all instances of "double" with "complex<double>" and rewrote the square root operation so that it would work with 
+complex numbers. 
+
+
+After making the changes to all of the files, I ran the tests test_prog1 and test_prog1.sh.  All of the tests passed when I last
+tested the program.  
+

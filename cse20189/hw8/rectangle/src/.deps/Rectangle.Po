@@ -1,0 +1,5 @@
+Rectangle.o: Rectangle.cpp Rectangle.h Point.h
+
+Rectangle.h:
+
+Point.h:

@@ -1,0 +1,31 @@
+John F. Lake, Jr. 
+CSE20212 Lab 3
+
+	1.) In order to make a base class concrete, you need to make one or more functions pure virtual functions.  In order to make a derived class concrete, you need to implement on of those functions. 
+	
+	2.) I made two derived classes based on the Package class that use composition instead of inheritance: CompOvernightPackage and CompTwoDayPackage.  The classes are tested in my driver file, and do essentially the same thing as their inheritance-driven counterparts.  Composition is incredibly unnatural when the derived class could naturally have the same data members as the Object used in composition.  
+	In this case, the Package object included as a data member of the derived classes had data that those derived classes should have just had themselves.  Inheritance works much better in this situation.  It is much more natural because a package that ships overnight (OvernightPackage in this case) has the same sort of data members as Package.h, and should just inherit those from the base class.  
+	
+	3.) Virtual functions are functions that a base class must implement, but derived classes can override this implementation with their own versions of the function. A function is made virtual by including the keyword "virtual" before the return type in the header for the class.  A function is a pure virtual function if "=0;" is added after the header; these functions are NOT implemented in the base class, and they make the base class abstract.  All derived classes that are not abstract must provide implementation for pure virtual functions in their base class.  
+	
+	This is important to know because sometimes a base class and a derived class can do the same thing, but do it very differently.  If you have a base class pointer, you can point it to the address of derived class objects, and if you call an virtual function that the derived class overrides you will get the result from this new derived funtion. 
+	
+	4.) (Normal Report Stuff)
+	
+		For this lab, I first created a hierarchy of BankAccount classes.  There is a base class, BankAccount.h, and two derived classes: IRA.h and CheckingAccount.h.  The derived bank account classes inherit from the base class, and I show how each account is different by calling different print functions in my driver program, main.cpp.  main.cpp tests classes I made in part 1, part 2, and part 3, so there are a lot of instances of different objects using default constructors.  
+		
+		For the second part, I made a hierarchy of Package classes.  The base class, Package, stores information about the sender, recipient, and the package itself.  The Package class contains a virtual function CalculateCost(), which is implemented in the base class and simply returns a double for the cost of shipping a package with a certain weight.  The two derived classes, TwoDayPackage and Overnight Package, override the CalculateCost() method, and the driver program, main.cpp, shows this.  
+		
+		For the third part, I first made two new classes which use composition instead of inheritance: CompTwoDayPackage and CompOvernightPackage.  Each one uses a Package object to store information, rather than inheriting the private data members.  (NOTE: I did not include a pure virtual function "printLabel" in Package for the last part of the lab because I would not have been able to use composition in this part if I did.) The driver file, main.cpp, makes instances of each of these using the default constructors, and shows that they work just as well as the inheritance-based classes.  
+		
+		In the last part, I made an array of Package base class pointers in main.cpp, and showed that these could point to and call methods from the derived class objects.  The array of 6 pointers is initialized, and points to 3 TwoDayPackage objects and 3 OvernightPackage objects.  The call to the virtual function CalculateCost() returns the value appropriate for the derived class, rather than using the base class version. 
+		
+		The driver file (what the user will see) displays that the objects work through the usage of print statements.  The bank account classes print the type of class they are, the package classes print the cost of shipping, the composition-classes print where they are being sent and how much they will cost, and the base class pointers will use the derived class functions to print the total cost of shipping 6 packages.  
+		
+		I made sure the classes worked properly by making the virtual functions different in the base class and the derived classes, and by making the default information different for each derived class (e.g: the two day package should cost $10 in the default case, and the overnight package should cost $12 in the default case.)  The print statements give the right versions of each functions, and the right prices are displayed.  Each object is initiated using the default constructor, so all of the basic inherited information is supposed to be the same, and is.  
+		
+		This was a very large, tedious lab with a lot of classes.  The makefile reflects this; it compiles everything in the lab - all 8 classes and the main.cpp driver file.  I attempted to follow the instructions and rubric closely, but the lab is still very cumbersome.  
+	
+	
+	
+	

@@ -1,0 +1,8 @@
+@BOOK{Unix Shells by Example,
+author = {Ellie Quigley},
+title = {Definition of Regular Expressions},
+publisher = {Pearson Education},
+year = {2005},
+address = {Upper Saddle River, NJ, USA},
+pages = {67}
+}

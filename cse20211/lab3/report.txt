@@ -1,0 +1,27 @@
+John F. Lake, Jr. 
+Lab 3 Report 
+23 SEP 2013 
+
+	For this lab, I was required to construct three programs.  The first two
+were structured and had given instructinos; I was to create a program that let 
+the user display various symbols on the screen, and a program that displayed a
+bouncing ball.  The third program gave me a bit of creativity; however, I 
+probably could have come up with something more entertaining. 
+	For my program, I display a spinning wand, with varying shapes, colors
+and sizes, controlled by the user.  The user can press 's', and a star will
+shoot out in the direction the wand is facing. The wand constantly spins 
+counterclockwise, and changes colors constantly.  The user can change the shape 
+of the end of the wand by pressing a number between 3 and 9, inclusive.  If the 
+user presses 't' or 'g', the wand will get longer or shorter.  If the user presses 
+'y' or 'h', the wand will speed up or slow down.  If the user presses 'q', the 
+program will end.  
+	I tested this program by ensuring that the user could not do anything which 
+could break the program.  I made sure that the program had limits on the speed and 
+length of the wand, so that the user could not set the wand to a condition which 
+would break the graphics engine.  I ensured the program worked correctly by testing 
+every key, and made sure that each expected action happened.  
+   	The program works by using a while loop, which constantly checks if the 
+program is running.  The program increments an angle from zero to 2*pi, and resets 
+to zero if it runs over 2*pi.  Using this angle, a wand is drawn out from the center 
+of the screen, and is drawn using a function.  User input changes a variety of 
+variables, and the wand reacts accordingly.  

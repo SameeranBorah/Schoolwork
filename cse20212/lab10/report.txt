@@ -1,0 +1,21 @@
+John F. Lake, Jr. 
+Lab 10 Report
+Project members: Thomas Deranek, John Lake, Garret Duffy, and Christian Clark
+Repository: shttps://github.com/tDeranek117/FundComp2-SemesterProject
+
+	1.)TIME LOG: My work time log is outlined in timelog.txt. 
+	
+	2.)2 GOALS: World class (Uses 2D Vector of Maps) and debugging.
+		a.) For the first part of this lab, I set out with my group to develop a way to transition to different areas when the player moves off the screen.  In order to accomplish this, I constructed a world class, which contains a 2D vector of filenames.  Each filename represents a file with tilemap data.  To test this, I made a bash script to construct multiple files with basic tiles (such as grass), named TileMap00.map through TileMap34 (4 rows of 5 columns.)  The player correctly moves from one area to the next, as the world class keeps track of the current area the player is in, and loads the next file when the player moves off the screen.  
+		
+		b.) Our group has been working diligently with the implementation of various animations, such as using a sword or rolling.  Many of these require extensive debugging to make sure the sprite sheets are being clipped properly, and that the animation transitions are working properly.  I spent a good hour of debugging things like rolling and using the sword, and clipped sprites to make sure that the animations were smooth.  
+	
+	3.)BRAGGING: Rolling Edition
+		During this lab period, I successfully designed a way to get the character to roll and speed up when the player presses the space bar while walking.  In order to do this, I had to come up with a new sprite sheet, and needed to implement the logic for the player to stop after a designated amount of time.  After the rolling animation happens twice, the player returns to a standing position, as normal. 
+		After the first implementation, the rest of the members of my group have helped perfect this movement, and we have added sound effects to go along with Link's movement. 
+		
+		This helps move our project forward because it sets the groundwork for other animation improvements with Link; it helps us get used to adding more functionality for the character, and already completes one of the main actions we want the player to be able to perform. 
+		
+		The extra 20 points are deserved because this is a classic move in the Legend of Zelda games, and it is very cool to be able to move quickly along a map with a simple tap of the space bar. 
+
+

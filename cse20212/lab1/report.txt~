@@ -1,0 +1,10 @@
+John F. Lake, Jr. 
+CSE 20212
+Lab 1 Report 
+
+	For this lab, I constructed a Connect4 game.  From the user's perspective, the game is played against a computer (player 2) opponent that randomly assigns pieces to different columns.  The computer player will check columns that are not full, and will put a piece in any of these columns.  The user (player 1) starts the game and plays against this computer opponent.  The user inputs a number, representing the column they would like to place a disc in (1-7) and the program will either place the piece (input = 1-7), end the game (input = -1), or give an error message (input isn't appropriate). (Note: The program assumes that the user will not enter symbols or letters.)  If a player (either the computer or user) gets 4 pieces in a row, the program will congratulate the winner and will prompt the user with the ability to play the game again.  The user will enter a number (0 for no, 1 for yes), and the program will either restart or close.  
+	
+	The program works internally by using 2 classes: C4Col and C4Board.  Each has a header file with the interface, and a .cpp file with the implementation.  Encapsulation was utilized to ensure that pieces were not put in invalid spots.  A driver file, main.cpp, was used to run the program, and also is the part of the program responsible for checking if a user wishes to play again.  The program checks to see who won by using a helper method, int gameOver(), which traverses through the cells to see if there are 4 discs of one kind in a row.  This works by moving from left to right, and uses a counter that increments for every subsequent disc that is the same, and resets when an empty space or an opponent's disc is in the way
+	
+	I verified that the program worked correctly by putting in all possible inputs for every column, and inputs outside of the valid spaces to see if the error messages worked.  The program works correctly, and gives error messages to the user if they place discs outside of the board, or try to place discs in columns that are full.  
+	

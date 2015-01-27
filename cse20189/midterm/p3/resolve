@@ -1,0 +1,34 @@
+#!/bin/csh
+#John Lake Unix Midterm part 3
+
+set i = 0
+set j = 0
+mkdir ndhosts
+set rt = "ndhosts/"
+while ( $i < 256 )
+	while ( $j < 256 ) 
+		set ip_address = "129.74.$i.$j"
+		if ( "`nslookup $ip_address | grep -c 'NXDOMAIN'`" == "0" ) then 
+			set name = `nslookup "$ip_address" | grep -m 1 'name =' | sed 's/.*= //g'`
+			set host = `echo $name | awk -F"." '{print $1}'`
+			set sub = `echo $name | awk -F"." '{print $2}'`
+			
+			if (!(-e $rt$sub"_hosts")) then
+				echo $host > $rt$sub"_hosts"
+			else
+				echo $host >> $rt$sub"_hosts"			
+			endif
+		endif
+		@ j++
+	end
+	@ i++
+	set j = 0
+end
+
+#All addresses are inserted. 
+foreach file (`ls -l ndhosts | awk '{print $9}' | grep '[^ ]'`)
+	sort -u $rt$file > $rt$file".tmp"
+	rm $rt$file
+	cat $rt$file".tmp" > $rt$file
+	rm $rt$file".tmp"
+end

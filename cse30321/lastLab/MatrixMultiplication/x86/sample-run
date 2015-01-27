@@ -1,0 +1,1 @@
+m2s --x86-sim detailed --x86-config x86-config --mem-config mem-config MatrixMultiplication --load MatrixMultiplication_Kernels.bin -q -x 64 -y 64 -z 64 -b 8 --device cpu

@@ -1,0 +1,10 @@
+John Lake and Katie Loughran
+CSE 20211
+Lab 9 Report 
+
+	For this project, we created a program which takes words from the user (up to 20 words of length 15 or less) and creates a crossword puzzle
+out of the words.  After the puzzle is created, the program prints the complete solution of the puzzle to the user, along with a blank puzzle which needs
+to be filled in.  At the end of the program, the program gives the user hints for each word in the crossword puzzle in the form of anagrams.  
+
+	The program first gets words from the user, verifying that the words aren't too long, and consist of characters in the alphabet. The program cycles through all of the words, and puts the largest word on the board.  After the largest word is put on the board, the word is removed from the initial list, and it is put into a list of the played words.  This is repeated for all of the words in the initial list, and if any word cannot be put on the board (determined by a function which checks the characters on the board), it is stated to the user.   Once all of the words have been placed, the program takes the character values on the board, and prints a solution and puzzle to the user.  The program then uses the list of the played words to give the user hints for how to solve the puzzle.  
+	The program heavily utilizes structures to keep track of the location and orientation of each word, along with the values of the characters on the board.  We checked various sequences of words and inputs, to see if any of them would break the rules given in the lab prompt.  We made multiple lists, including words that have non-alphabetical characters and words that are too long, and concluded that the program works as required.  

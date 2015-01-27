@@ -1,0 +1,24 @@
+\documentclass{article}
+\begin{document}
+John F. Lake, Jr. 
+Problem3.pdf
+
+\section{Solution}
+	The solution lies in changing line 7.  Size is a pointer, so "int s = size;" sets s to be a memory address, not the size wanted.  The simple solution is to add * before size. 
+\section{Debugging Output}
+\begin{verbatim}
+	The debugger gave the following output when I tested the value of variable s: 
+	(gdb) print s
+	$6 = -9420
+	The variable size was also tested: 
+	(gdb) print size
+	$5 = (int *) 0x7fffffffdb34
+	Because size and s are different types, it is wrong to assign s to size.
+	You need to dereference it first.  
+\end{verbatim}	
+\section{Methodology}
+	In order to solve the problem, I first looked at the source code briefly, to find any egregious errors.  After looking at this, I used gdb to test certain variables, such as size and s.  
+	Because the program initially didn't print anything, I suspected something was wrong in the printArray function.  I was correct, as the error was indeed in a declaration statement in this
+	function.
+
+\end{document}

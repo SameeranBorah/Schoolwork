@@ -1,0 +1,9 @@
+John Lake Time Log: 
+
+1 Hour: Lab before spring break.
+~10 Hours: Working on Zelda xcode project over break: 
+	- Successful sprite animation
+	- Different classes for Sprites, Boundaries, etc. 
+	- Uses SDL 2 - will not run on the Linux machines 
+1 Hour: Lab after spring break.
+

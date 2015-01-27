@@ -1,0 +1,13 @@
+John F. Lake, Jr. 
+Lab 5 Report 
+14 OCT 2013
+
+	For the second part of the lab, I chose the snowflake as the type of fractal to use for the gallery.  I set up a screen with 16 different versions, with arbitrary inputs.  
+Each version of the snowflake varies in size, thickness (depth), and the angle between each branch.  Because of the different angles, some of the snowflakes have shapes that aren't 
+symmetric. 
+
+	The user, when he opens the program, will observe the different types of snowflakes (all are white, as snowflakes are most commonly found in nature as white), and can close the program by pressing the 'q' key on the keyboard. 
+
+	To make the program, I set up one recursive function which draws snowflakes, with parameters for the location, size, thickness, and angle between each branch. This function is called 16 times (because the values are arbitrary, I felt as if a loop would make the snowflakes look too similar), and the program calls a gfx_wait() function to see if the user has pressed the 'q' key.  The call to gfx_wait() also flushes the input to the screen.  
+
+

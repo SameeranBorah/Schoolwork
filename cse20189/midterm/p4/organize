@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+
+for line in $(ls -F myfiles)
+do
+	numArgs=$(echo $line | grep -c '.*\..*\>')
+	if [ "$numArgs" -eq "1" ]; then
+		type=$(echo $line | awk -F"." '{print $2}')
+		fileName=$(echo $line | awk -F"." '{print $1}')
+		if [ "" != "$type" ]; then
+			if [ ! -d "myfiles/"$type ]; then
+				mkdir "myfiles/"$type
+				mv "myfiles/"$fileName"."$type "myfiles/"$type
+			else
+				mv "myfiles/"$fileName"."$type "myfiles/"$type
+			fi
+		fi
+	else
+		if [ ! -d "myfiles/no_ext" ]; then
+				mkdir "myfiles/no_ext"
+				mv "myfiles/"$line "myfiles/no_ext"
+			else
+				mv "myfiles/"$line "myfiles/no_ext"
+		fi
+	
+	fi
+done
+

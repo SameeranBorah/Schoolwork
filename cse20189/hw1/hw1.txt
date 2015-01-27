@@ -1,0 +1,120 @@
+John F. Lake, Jr. 
+CSE 20189
+HW # 1
+
+1.) 	
+set autologout=600: Tells the shell to log you out after 600 minutes, or 10 hours.  
+ 
+set filec: Turns on filename completion (when you type enough characters that it is unique, the shell will finish the name.) 
+
+set noclobber: Removes the overwrite function with the ">" character.  
+
+set history=40: Makes the shell remember the last 40 events. 
+
+set ignoreeof: Prevents the user from logging out when they press ctrl-d.  
+
+2.) 
+You use mkdir to make directories in Unix. 
+
+To change to the directory from the afs home directory to the homework1 directory using an absolute path, I would type the entire pathname: "cd afs/nd.edu/courses/cse/cse20189.01/dropbox/jlake2/hw1".  
+
+To change it using a relative path, I would type "cd nd.edu/courses/cse/cse20189.01/dropbox/jlake2/hw1".  This is relative because it just takes into consideration the directory's location relative to whichever directory you are working in.  
+
+3.) 
+Here are three ways to change the permissions of a file from rwxr-x--x to r--r--r--:
+	i.) Use "chmod 444 file_name" (Regular mode) 
+	ii.)Use "chmod ugo-x file_name; chmod u-w file_name; chmod o+r file_name" (Symbolic mode)
+	iii.)Use "chmod 414 file_name; chmod g-x file_name; chmod g+r file_name"  (Combo of both) 
+	
+4.)  lpr, lpq, lprm, and lpc:
+	i.) lpr: 
+		lpr takes files that the user specifies and prints them.  If there is no input to lpr, it will print from the standard input. 
+	ii.) lpq: 
+		lpq shows the jobs queued on the specified printer.  lpq will show jobs on the default destination if the user doesn't give a printer. 
+	iii.) lprm: 
+		lprm quits one or more jobs from the print queue.  If no printer is specified, it will end jobs on the default destination. 
+	iv.) lpc: 
+		lpc limits the control over the printer queues, and can be used to get information about them.  If no command is given, lpc will accept
+		commands from the standard input. 
+		
+5.) The permissions for my home directory are drwxr-xr-x.  I have the permissions to read, write, and execute.  Users in my group have the permissions 
+to read and execute, and other users have the permissions to read and execute.  
+
+6.) In my home directory, my AFS permissions are rlidwka (I can read, list, insert, delete, and write files.  Programs can place locks on a file, and I can change the ACL of the directory.  The group "system:anyuser" has the permission l (only to list files), and the group nd_campus also has the perrmission l (only to list files). 
+
+7.) The directory I am in is "/afs/nd.edu/coursesp.14/cse/cse20189.01/dropbox/jlake2/hw1/vendors/clients/ky".
+
+After I copied the files, I used the ls command and got the following output: 
+
+[jlake2@student01 ky]$ ls -lsRa
+.:
+total 8
+2 drwxr-xr-x 3 jlake2 dip 2048 Jan 22 15:13 .
+2 drwxr-xr-x 4 jlake2 dip 2048 Jan 22 15:04 ..
+1 -rw-r--r-- 1 jlake2 dip  161 Jan 22 15:13 congratulations
+0 -rw-r--r-- 1 jlake2 dip    0 Jan 22 15:13 _did
+2 drwxr-xr-x 2 jlake2 dip 2048 Jan 22 15:13 it
+1 lrwxr-xr-x 1 jlake2 dip    8 Jan 22 15:13 right -> it/right
+0 -rw-r--r-- 1 jlake2 dip    0 Jan 22 15:13 __YOU
+
+./it:
+total 5
+2 drwxr-xr-x 2 jlake2 dip 2048 Jan 22 15:13 .
+2 drwxr-xr-x 3 jlake2 dip 2048 Jan 22 15:13 ..
+1 -rw-r--r-- 1 jlake2 dip  130 Jan 22 15:13 right
+
+8.) The touch command changes the timestamp of a file.  When I go to the /etc/ directory and use touch, I am not allowed to make a file because I do not have write permissions in the /etc/ directory.  
+
+In the /tmp/ directory, I can make a file because everyone has the same permissions in that directory. This is different from the /etc/ directory because of the permission settings.  
+
+9.) After using umask 000, the permissions on the world.txt file are -rw-rw-rw-.
+After using umask 022 and creating world2.txt, the permissions are -rw-r--r--.
+
+The permission after using umask 022 are more strict.  umask could be useful for setting the permission for files before creating them, making it easier to set permissions for a multitude of files before you make them.  
+
+10.) 	
+more: Command that lets you look through text one screenfull at a time. 
+
+less: Similar to more, but lets you look backwards through the file as well. 
+	
+head: Prints the first 10 lines of a file to the screen.  You can change the number of lines, and if there is not file given, standard input is used. 
+	
+tail: Same as head, but prints the last 10 lines to the screen.   
+	
+cat: Concatenate files (combine them) and print the result to the standard output.  
+
+pr: This command converts and prepares text files for printing. 
+
+rmdir: Removes directories, but only if they are empty.  
+	
+ln -s: Makes a symbolic link between two files. 
+	
+find: Searches for a file in the hierarchy of directories.  
+	
+cp -pr: Recursively copies files (copies files in subdirectories) to another directory, and preserves their attributes. 
+
+11.) Using ls -r will print them in the reverse order. 
+
+12.) 
+pushd: Adds a directory to the top of the directory stack.  
+
+popd: Removes directories from the stack of directories. 
+
+These commands can be used to quickly change between directories that you frequently visit.  
+
+13.) I would use ps and would look for the shell process.  PID is the process ID.  
+
+14.)  There are 2469151 characters, 95749 words, and 32528 lines.  
+I used wc -wcl to find these values. 
+
+15.)
+One major contribution Unix made to the world of operating systems was the idea of pipes.  (Multiple commands in a pipeline.) 
+
+In PDP-11, the OS had path names, but in PDP-7 the OS only had the ability to take relative input from a current directory.  
+
+
+
+
+
+
+.

@@ -1,0 +1,364 @@
+//John Lake and Katie Loughran 
+//Lab 9
+//crossword.c - an anagram crossword puzzle 
+
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h> 
+#include <string.h> 
+
+
+
+
+//Structure Declarations: 
+struct word{
+	int row;     	//row on the board
+	int column; 	//column on the board
+	int wordLength; //length of the word
+	char strValue[16];  //string containing the word
+	int orientation; 	//1 is horizontal, 0 is vertical
+}; typedef struct word Word; 
+
+struct answerBoard{
+	int rows; 
+	int columns; 
+	char charValues[15][15];
+}; typedef struct answerBoard AnswerBoard;
+
+
+//Function Prototypes: 
+void getWords(Word wordList[20],int * size);
+void getLargestWord(Word wordList[20], Word * largest);
+void removeWordFromList(Word *wordList,Word w,int * sizeOfList);
+void setUpBoard(AnswerBoard * ab);
+void putWordInBoard(AnswerBoard * ab, Word w,int x, int y,int orientation,int* numWordsPlayed);
+void printBoard(AnswerBoard *ab,int solution); 
+void placeWordIfCross(Word w, AnswerBoard * ab,Word * playedWords,int* numWordsPlayed, int *flag);
+int wordCanBePlaced(AnswerBoard * ab,Word w,int x, int y, int wordLength,int orientation); 
+void printClues(Word playedWords[20], int numWordsPlayed); 
+ 
+int main(void){
+
+	//Initialize necessary variables
+	int sizeOfList,i,numWordsPlayed,continuePlacingWords = 1; 
+	
+	AnswerBoard ab;  //Holds all of the characters	
+	Word wordList[20];  
+	Word playedWords[20]; 
+	Word large;
+	setUpBoard(&ab); 	
+	 
+	//Get the words from the user
+	getWords(wordList,&sizeOfList);
+	int totalWords = sizeOfList; 
+
+	//Put the words on the board: 
+	getLargestWord(wordList,&large); 
+	removeWordFromList(wordList,large,&sizeOfList); 
+	large.column = (15-strlen(large.strValue))/2; 
+	large.row = 7; 
+	large.orientation = 1; 
+	playedWords[0] = large;  
+	putWordInBoard(&ab,large,(15-strlen(large.strValue))/2,7,1,&numWordsPlayed);
+	
+	 
+
+	//Put the other words on the board: 
+	for(i=0;i<totalWords-1;i++){ //goes to totalWords-1 because the first word has been played
+		getLargestWord(wordList,&large);  
+		removeWordFromList(wordList,large,&sizeOfList); 
+		placeWordIfCross(large,&ab,playedWords,&numWordsPlayed,&continuePlacingWords);
+		if(!continuePlacingWords)break; 
+	}
+	
+	printBoard(&ab,1);
+	printBoard(&ab,0); 
+	printClues(playedWords,numWordsPlayed); 
+
+} 
+
+//Gets the words from the user and puts them into a word list (multi-dimensional array) 
+void getWords(Word wordList[20],int * size){
+	printf("ANAGRAM CROSSWORD PUZZLE:\n*************************\n");
+	printf("\n\nEnter a list of up to 20 words of up to 15 letters each.\n"); 
+	printf("Press . and hit enter when you are done.\n\n"); 
+
+	int i,j,flag;//i,j used in loops, flag used to tell if a word is valid  
+	for(i=0;i<20;i++){
+		flag = 1; 
+		char word[100]; 
+		scanf("%s",word); 
+
+		if(word[0] == '.'){
+			int j;
+			*size = i; 
+			for(j=i;j<20;j++){
+				strcpy(wordList[j].strValue,""); 
+			}
+			printf("\n"); 
+			return;  
+		}
+		else if (strlen(word)>15){
+			printf("That word is too large.\n"); 
+			i--;  
+		}
+		else{
+			for(j=0;j<strlen(word);j++){
+				if(!isalpha(word[j]) && !isspace(word[j])){
+					flag = 0; 
+					printf("Only input characters A-Z\n"); 
+					i--;
+					break;  
+				}
+			}
+			if(flag)strcpy(wordList[i].strValue,word); 
+		} 
+	}
+	*size = i; 
+	printf("\n"); 
+}
+
+
+//Takes the largest word in the list and puts it into the "largest" variable
+void getLargestWord(Word wordList[20], Word* largest){
+	int length[20];  //Holds the length of each word in the word list
+	int longest = 0; //Position of the longest word
+	int i,j; 
+
+	//Initialize the length values to be zero
+	for(i=0;i<20;i++)length[i] = 0; 
+
+	//Get the length of each word in the list: 
+	for(i=0;i<20;i++){
+		for(j=0;j<15;j++){
+			if(isalpha(wordList[i].strValue[j])){
+				length[i]++; 
+			}else j=15; 
+		}
+	}
+	//Find the location of the longest word: 
+	for(i=1;i<20;i++){
+		wordList[i].wordLength = length[i]; 
+		if(length[i]>=length[longest]) longest = i; 		
+	}
+
+	//put the longest word in a temporary variable to be returned at the end of the function
+	strcpy(largest->strValue,wordList[longest].strValue);   	
+}
+
+//Nothing fancy, sets the board to have '.' for every character value. 
+void setUpBoard(AnswerBoard * ab){
+	int i,j; 
+	for(i=0;i<15;i++){
+		for(j=0;j<15;j++){
+			ab->charValues[i][j] = '.'; 
+		}
+	}
+}
+
+
+//Removes the last word played (the current largest word in the list) from the list. 
+void removeWordFromList(Word *wordList,Word w,int * sizeOfList){
+	int duplicates = 0; 
+	int i,j=0; 
+	Word temp[*sizeOfList-1];
+	for(i=0;i<*sizeOfList;i++){
+		if(strcmp(wordList[i].strValue,w.strValue) || duplicates>0){  //If the word is not the word you want to remove, put it in a temp list
+			strcpy(temp[j].strValue,wordList[i].strValue); 
+			j++; 
+		}
+		else{	
+			duplicates++; 
+		}
+	}
+	
+	for(i=0;i<*sizeOfList;i++){
+		strcpy(wordList[i].strValue,"");  
+	}
+	*sizeOfList -= 1; 
+	for(i=0;i<*sizeOfList;i++){
+		strcpy(wordList[i].strValue,temp[i].strValue);  
+	}
+}
+
+//Puts a word on the board at the given location with the given orientation. 
+void putWordInBoard(AnswerBoard * ab, Word w,int x, int y,int orientation,int * numWordsPlayed){
+	*numWordsPlayed+=1;
+	int i;
+	switch(orientation){
+		case 1: //Horizontal
+			for(i=0;i<strlen(w.strValue);i++){
+				ab->charValues[x+i][y] = toupper(w.strValue[i]); 
+			}
+			break; 
+		case 0: //Vertical 
+			for(i=0;i<strlen(w.strValue);i++){
+				ab->charValues[x][y+i] = toupper(w.strValue[i]); 
+			}
+			break; 
+	}
+}
+
+//Prints the solution or crossword puzzle, depending on the value of the "solution" variable"
+void printBoard(AnswerBoard *ab, int solution){
+	int i,j; 
+	if(solution){
+		printf("Solution:\n"); 
+		for(j=0;j<15;j++){
+			for(i=0;i<15;i++){
+				printf("%c",ab->charValues[i][j]); 
+			}
+			printf("\n"); 
+		}
+	}
+	else{
+		printf("Crossword Puzzle:\n"); 
+		for(j=0;j<15;j++){
+			for(i=0;i<15;i++){
+				if(ab->charValues[i][j] == '.'){
+					printf("#"); 
+				}
+				else{
+					printf(" "); 
+				}
+			}
+			printf("\n"); 
+		}
+	}
+	printf("\n\n"); 
+}
+
+
+//Checks if a word can be placed on the board, and puts the word in the board if possible
+void placeWordIfCross(Word w, AnswerBoard * ab,Word *playedWords,int* numWordsPlayed, int*flag){ 
+	int i,j; 
+	//Checking horizontally: 
+	for(i=0;i<15-strlen(w.strValue);i++){//increment the column
+		for(j=0;j<15;j++){ //Row
+			if(wordCanBePlaced(ab,w,i,j,strlen(w.strValue),1)) {
+				w.row = j; 
+				w.column = i; 
+				w.orientation = 1; //Horizontal; 
+				playedWords[*numWordsPlayed] = w;
+				putWordInBoard(ab,w,i,j,1,numWordsPlayed);	
+				return; 
+			}
+		}
+	}
+	//Checking vertically: 
+	for(i=0;i<15;i++){//increment the column
+		for(j=0;j<15-strlen(w.strValue);j++){ //Row
+			if(wordCanBePlaced(ab,w,i,j,strlen(w.strValue),0)) {	
+				w.row = j; 
+				w.column = i; 
+				w.orientation = 0; 
+				playedWords[*numWordsPlayed] = w; 
+				putWordInBoard(ab,w,i,j,0,numWordsPlayed);
+				return; 
+			} 
+		}
+	}
+	printf("%s could not be put on the board. \n",w.strValue);
+}
+
+
+//Checks if the given word can be placed at the given location with the given orientation
+int wordCanBePlaced(AnswerBoard * ab,Word w, int x, int y, int wordLength,int orientation){
+	int letters = 0;// used to check how many letters are around the word
+	int t,j; 
+
+	switch(orientation){
+		case 1: //horizontal  
+			for(t=0;t<wordLength;t++){
+				if(ab->charValues[x+t][y] == toupper(w.strValue[t])){  //If the letter on the board is the same as in the word:
+					if(y==0){  //Don't check above the word for letters if it's at the top of the board: 
+						for(j=x;j<x+wordLength;j++){
+							if(ab->charValues[j][y+1] != '.') letters++; 
+						}
+					}		//Don't check below the word if it's at the bottom
+					else if (y==14){
+						for(j=x;j<x+wordLength;j++){
+							if(ab->charValues[j][y-1] != '.') letters++; 
+						}
+					}	//Otherwise, check above and below the word for letters: 
+					else{
+						for(j=x;j<x+wordLength;j++){
+							if(ab->charValues[j][y+1] != '.' || ab->charValues[j][y-1] != '.'){
+								letters++; 
+							}
+						}
+					}//Check behind and in front of the word for letters 
+					if(x==0){
+						if(ab->charValues[x+wordLength][y] != '.') letters++;
+					}else if (x==14) {
+						if(ab->charValues[x-1][y] != '.') letters++; 
+					}else{
+						if(ab->charValues[x-1][y] != '.' ||ab->charValues[x+wordLength][y] !='.') letters++; 
+					}
+					//If the conditions are met, and the word won't touch any other letters but those perpendicular to it from
+					//the word it's intersecting, then you can put it in the board. 
+					if(ab->charValues[x+t+1][y] == '.' && ab->charValues[x+t-1][y] == '.' && letters == 1)return 1; 
+				}
+			}
+			break; 
+		case 0: //vertical
+			for(t=0;t<wordLength;t++){
+				if(ab->charValues[x][y+t] == toupper(w.strValue[t])){   //If the letter on the board is the same as in the word:
+					if(x==0){ //Don't check to the left of the word if it's at the left of the screen
+						for(j=y;j<y+wordLength;j++){
+							if(ab->charValues[x+1][j] != '.') letters++; 
+						}
+						if(y==0){
+							if(ab->charValues[x][y+wordLength-1] != '.') letters++;
+						}
+					}	//Don't check to the right of the word for letters if it's at the right of the screen
+					else if (x==14){
+						for(j=y;j<y+wordLength;j++){
+							if(ab->charValues[x-1][j] != '.') letters++; 
+						}
+					}
+					else{
+						for(j=y;j<y+wordLength;j++){
+							 if(ab->charValues[x+1][j] != '.' || ab->charValues[x-1][j] != '.') letters++; 
+						}
+						
+					}
+					if(y==0){
+						if(ab->charValues[x][y+wordLength] != '.') letters++;
+					}else if (y==14) {
+						if(ab->charValues[x][y-1] != '.') letters++; 
+					}else{
+						if(ab->charValues[x][y-1] != '.' || ab->charValues[x][y+wordLength] != '.') letters++; 
+					}
+					//If the conditions are met, and the word won't touch any other letters but those perpendicular to it from
+					//the word it's intersecting, then you can put it in the board. 
+					if(ab->charValues[x][y+t+1] == '.' && ab->charValues[x][y+t-1] == '.' && letters == 1) return 1; 
+				}	
+			}
+			break; 		
+	}
+	return 0;  //If none of the cases above are met, return 0; 
+}
+/*Prints the anagram clues to the crossword puzzle 
+playedWords: list of words put on the board. 
+numWordsPlayed: number of words put on the board. 
+*/
+void printClues(Word playedWords[],int numWordsPlayed){
+	printf("Clues:\n\n"); 
+	int i; 
+	for(i=0;i<numWordsPlayed;i++){
+		switch(playedWords[i].orientation){ //if the word is horizontal, print "across"; if vertical, print "down".  
+			case 1: //across: 
+				printf("%d, %d across: %s \n",playedWords[i].column,playedWords[i].row,strfry(playedWords[i].strValue)); 
+				break;
+			case 0: //down: 
+				printf("%d, %d down: %s \n",playedWords[i].column,playedWords[i].row,strfry(playedWords[i].strValue)); 
+				break; 
+		}
+
+	}
+}
+
+
+
+

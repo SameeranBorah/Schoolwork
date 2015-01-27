@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+start=`date +%s`
+./diameter2 snap.txt
+end=`date +%s`
+
+runtime=$((end-start))
+echo $runtime; 
+

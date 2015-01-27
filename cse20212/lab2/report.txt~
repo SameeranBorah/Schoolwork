@@ -1,0 +1,13 @@
+John F. Lake, Jr. 
+CSE 20212
+Lab 2 Report 
+
+	For this lab, I constructed a Rational class, which held information about rational numbers and performed various actions with them.  From the user's perspective, the program takes input from the user for numerators and denominators for two different rational numbers.  The program then takes the user's input and calculates 4 different equations given the rational numbers.  I implemented 5 functions for calculation: add, subtract, multiply, divide, and inverse.  The program uses 5 overloaded operators in order to use these functions: +,-,*,/, and ^.  The ^ operator takes the inverse of the rational number operating on it, but I could not get the program to compile without providing an argument, so the ^ operator is used by passing the rational number 1 to it.  (e.g: the inverse of Rational ret(5,6) is calculated by calling ret^Rational(1,1); 
+	
+	The program is divided into 2 files: Rational.h and Rational.cpp.  Rational.cpp includes implementation for the Rational class, as well as the main method and a calculateFunctions method. (In the makefile, I included Rational as the "driver" for part 3, as the main method in Rational.cpp performs all of the necessary tasks needed.) The program stores rational numbers in reduced form (4/2 is stored as 2), and all of the operations result in rational numbers in reduced form.  A private helper function, GCD(int,int) was used when finding the reduced form of each of the rational numbers.  I overloaded a variety of operators, including the << operator, so that the program could simply perform the operation cout << Rational, and would print the rational number in reduced form. The program takes the user's input using cin, and performs 4 calculations of my choosing, including an inverse operation which shows a perpindicular slope to a given slope m.  
+	
+	To verify the program, I inputted a variety of different rational numbers, and hand calculated the equations to make sure that the program correctly calculated and reduced the answers.  The program works well with all of the inputs I attempted, and performs the calculations accurately reliably.  
+	
+	
+	
+	

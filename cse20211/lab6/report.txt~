@@ -1,0 +1,9 @@
+John F. Lake, Jr. 
+Lab 6
+28 OCT 2013
+
+	I used the graphics library to construct the othello game for this lab. I was told during my lab that I could do this without penalty; I thought it was more realistic and user-friendly to have a user click a space, rather than taking the time to write in coordinates on the command line.  
+
+	For the second part of the assignment, the user inputs the size of the board, and plays a game of othello against the computer.  The user's color is white, and the computer's color is red.  The computer moves to a valid (albeit not optimal) position after the user moves (via clicking the board), and continues this until the end of the game.  Once the last move is played, the window will close and the results of the game are printed on the command line.  
+
+	The program utilizes many functions to run - there are functions that check for pieces in each direction, functions to reset the board, and functions to flip pieces to the other color.  The program runs within a single while loop, and the loop terminates when either all of the positions have been filled or the user presses the key 'q'.  

@@ -1,0 +1,73 @@
+#!/bin/bash
+#John F. Lake, Jr. 
+#Final, part 1
+#cchunt, searches for credit card numbers stored in files in /var/tmp/usr
+#On student01, this should return zero, as /var/tmp/usr only contains directories. 
+
+#Clear the screen: 
+clear; 
+
+#Declare the file Path
+filePath="/var/tmp/usr"
+
+#Get the Machine Name 
+machineName=$(hostname);
+
+#Initialize the number of files with credit card #'s to be zero
+let numFiles=0;
+
+
+#Write the first few lines of the .tex file, including the machine name and the start of the table: 
+touch ccReport.tex
+echo "\documentclass{article}" > ccReport.tex
+echo "\begin{document}" >> ccReport.tex
+echo "  " >> ccReport.tex
+echo "MACHINE: $machineName" >> ccReport.tex
+echo "\\\\" >> ccReport.tex
+echo "\\\\" >> ccReport.tex
+echo "\begin{tabular}{l | c}" >> ccReport.tex
+echo "NAME OF FILE: & PATH TO FILE: \\\ " >> ccReport.tex
+
+
+
+#Loop through the files
+for fp in $(find $filePath -type d)
+do
+	for OUTPUT in $(ls $fp)
+	do
+		#Check if the value is a file (rather than a directory): 
+		if [ -f "$fp/$OUTPUT" ] 
+		then
+			
+			#If a file is PLAIN TEXT (ASCII), search for a credit card number
+			if [[ ! $(file "$fp/$OUTPUT" | grep -c 'ASCII') == "0" ]] 
+			then
+				fileName="$fp/$OUTPUT";
+				echo $fileName
+				#If the file contains a credit card number in the form of XXXX XXXX XXXX XXXX
+				if [ ! $(more $fileName | grep -Ec '(\<[0-9]{4} ){3}[0-9]{4}\>') == "0" ]
+				then
+					#increment numFiles and write to the .tex table the name of the file and its absolute path
+					let numFiles=numFiles+1;
+					echo "$OUTPUT & $fp/$OUTPUT \\\ " >> ccReport.tex
+				fi
+			
+		
+			fi
+		
+		fi
+	
+	done
+done
+
+#Write the closing information for the .tex file 
+echo "\end{tabular}" >> ccReport.tex
+echo "\\\\" >> ccReport.tex
+echo "\\\\" >> ccReport.tex
+echo "TOTAL NUMBER OF FILES WITH CREDIT CARD NUMBERS:  $numFiles" >> ccReport.tex
+echo "\end{document}" >> ccReport.tex
+
+#Convert the file to a pdf: 
+pdflatex ccReport.tex
+
+

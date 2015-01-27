@@ -1,0 +1,32 @@
+\documentclass{article}
+\usepackage{listings}
+\begin{document}
+John F. Lake, Jr. 
+perlSnippets.tex
+HW # 8
+
+
+\begin{description}
+\item[A] \hfill \\ 
+\begin{lstlisting}[language = Perl]
+#!/usr/bin/perl
+foreach $line (`more unixbook.txt`){
+	$line =~ s/1337/elite/g;
+}
+\end{lstlisting}
+\item[B] \hfill \\ 
+\begin{lstlisting}[language = Perl]
+#!/usr/bin/perl
+foreach $line (`more greetings.txt`){
+	$line != m/Hello/;
+}
+\end{lstlisting}
+\item[C] \hfill \\ 
+\begin{lstlisting}[language = Perl]
+#!/usr/bin/perl
+foreach $line (`more input.txt`){
+        print($line);
+}
+\end{lstlisting}
+\end{description}
+\end{document}

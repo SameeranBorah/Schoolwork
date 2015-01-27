@@ -1,0 +1,83 @@
+\documentclass[11pt]{res} % default is 10 pt
+%\usepackage{helvetica} % uses helvetica postscript font (download helvetica.sty)
+%\usepackage{newcent}   % uses new century schoolbook postscript font 
+\setlength{\textheight}{9.5in} % increase text height to fit resume on 1 page
+\newsectionwidth{0pt}  % So the text is not indented under section headings
+
+\begin{document} 
+ 
+\name{John F. Lake\\[12pt]} % the \\[12pt] adds a blank line after name
+
+\address{{\bf PRESENT ADDRESS} \\   420 Stanford Hall \\   Notre Dame, IN,
+         46556   \\ (219) 575-1902}
+\address{{\bf PERMANENT ADDRESS} \\ 4968 N Hunters Glen \\ La Porte, IN,
+         46350 \\ (219) 575-1902}
+                             
+\begin{resume}
+                                               
+ 
+\section{OBJECTIVE}
+   Network with possible future employers for a position after my service in the Army. 
+ 
+\section{EDUCATION} 
+ \noindent UNIVERSITY OF NOTRE DAME, Notre Dame, IN \\
+Class of 2016\\
+B.S. Computer Science \\ 
+ 
+\section{EXPERIENCE} 
+ CADET\\
+U.S. Army \\
+August 2012 to Present
+\vspace{0.2in}
+   \begin{itemize} \itemsep -2pt  % reduce space between items
+   \item Worked as a team in military training exercises.  
+   \item Developed and executed training plans for physical training.
+   \item Will travel to Romania the Summer of 2014 for a cultural immersion program with the Army.  
+ \end{itemize}
+
+ RESEARCH ASSISTANT \\
+University of Notre Dame Quarknet Lab \\ 
+Summer 2011
+\vspace{0.2in}
+ \begin{itemize} \itemsep -2pt
+   \item Helped develop algorithms for interpreting muon-detector data.
+  \item Assisted in the research of the subatomic particle, the muon.  
+  \item Wrote a report detailing the researching process.
+\end{itemize} 
+
+\section{HONORS} 
+ 
+\begin{itemize} \itemsep -2pt
+	\item Sons of the American Revolution Award (ROTC) 
+	\item Alumni Memorial Award from La Lumiere School
+	\item Dean's List, ND College of Engineering
+	
+\end{itemize}
+\section{ACTIVITIES} 
+\begin{itemize} \itemsep -2pt
+	\item Color Guard
+	\item Ranger Challenge Team 
+	\item ARC (Army ROTC Club) Club Secretary 
+\end{itemize}
+\section{HOBBIES} 
+ \begin{itemize} \itemsep -2pt
+	\item Snowboarding
+	\item Running
+	\item Golf
+	\item Tennis
+\end{itemize}
+
+
+\end{resume}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+

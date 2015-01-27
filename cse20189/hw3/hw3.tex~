@@ -1,0 +1,61 @@
+\documentstyle{article} 
+
+\begin{document}
+
+John F. Lake, Jr. 
+CSE20189 HW \# 3
+
+\begin{verbatim}
+	1.) /(c|h)at/
+	2.) /t(t|h)e/
+	3.) /\b[A-Za-z]at\b/
+	4.) /[^v]at/
+	5.) /[^ch]at/
+	6.) /.+(c|r)at/
+	7.) f: all of the above. 
+	8.) /[Cc]at/
+	9.) /\b[Cc]ats?\b/
+	10.) /^[Cc]at\b/
+	11.) /\bcats$/
+	12.)"\b(dog(gy|gie)?|pupp(y|ie)|canine)s?\b" would match the following words: 
+\end{verbatim}
+\begin{itemize}
+	\item dog
+	\item dogs
+	\item doggy
+	\item doggys
+	\item doggie
+	\item doggies
+	\item puppy
+	\item puppys
+	\item puppie
+	\item puppies
+	\item canine
+	\item canines	
+\end{itemize}
+\begin{verbatim}
+13.) /\b[Rr]egular [Ee]xpressions?\b/
+14.) /[Vv] *1 *@ *[Gg]{2} *[Rr]{2} *@/
+15.) /19[5-8]\d|1990/
+16.) /[Mm]a(de|(k(ing|es?)))/
+17.) /(flowing|ru(shing|nning)) +water/
+18.) /\b\d*[13579]\b/
+\end{verbatim}	
+19.) The expression, said out loud, is read as "two b OR NOT two b", which would be referencing the Shakespearean line "To be or not to be" in Hamlet.  
+\begin{verbatim}
+20.) /Dr.(\s|\t)*Who/
+21.) /(and$/o$r)|(red oak)/
+22.) /\b(\d{9}|(\d{3}-\d{2}-\d{4}))\b/
+23.) /\b((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\b/
+\end{verbatim} 
+Explanation:  The first part (before {3}) is considering the three sets of numbers before periods: XXX.XXX.XXX. In order for this to take
+numbers from 1-255, the regular expression checks for numbers 1-9 (\textbackslash d), 10-99 ([1-9]\textbackslash d), 100-199 
+(1\textbackslash d \textbackslash d), 200-249 (2[0-4]\textbackslash d), 
+and 250-255 (25[0-5]).  At the end of this, it is grouped with a period at the end, which has a backslash before it so that it doesn't confuse 
+it with the "anything character", and is repeated 3 times.  This matches XXX.XXX.XXX., so the 
+last group is simply a repeat of the first group without the period at the end.  
+
+
+	
+
+\end{document}
