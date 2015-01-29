@@ -1,0 +1,240 @@
+/*
+	John F. Lake, Jr. 
+	CSE 30264
+	Project 1: Server for FTP program	
+*/
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/socket.h>
+#include <time.h>
+#include <unistd.h>
+#include <stdint.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <string.h>
+#include <stdlib.h>
+#include "mhash.h"
+#define BUFFER_LEN 500
+#define NUM 500
+
+//Main function: 
+int main(int argc, char**argv){
+
+
+//loop to receive multiple messages:
+	while(1){
+	
+		//Necessary data elements
+		int mysock; 
+		int sr; 
+		int numBytes; 
+		int accepted = 1; 
+		struct addrinfo hints; 
+		struct addrinfo *res; 
+		char * port; 
+		struct sockaddr_storage their_address; 
+		socklen_t address_length; 
+		char buf[BUFFER_LEN]; 
+		char s[50];
+		
+		//Get the port.  Default is 9499
+		if(argc == 2){
+			port = argv[1]; 
+		}
+		else{
+			port = "9499"; 
+		}
+	
+		
+	
+		//Set the addrinfo as empty before starting
+		memset(&hints,0,sizeof(hints)); 
+	
+		hints.ai_family = AF_UNSPEC; //IP Agnostic
+		hints.ai_socktype = SOCK_STREAM; //TCP
+		hints.ai_flags = AI_PASSIVE; //Use my IP address
+
+		
+		
+		sr = getaddrinfo(NULL,port,&hints,&res);  //Get address information, and set the port as the first argument
+		if(sr != 0){
+			printf("ERROR: COULD NOT GET ADDRESS INFORMATION!\n"); 
+			//exit(1); 
+		}
+	
+	
+
+
+
+		//make the socket
+		mysock = socket(res->ai_family, res->ai_socktype,res->ai_protocol); 
+		if(mysock==-1){
+			printf("ERROR: SOCKET COULD NOT BE MADE.\n"); 
+			//exit(1); 
+		}
+		
+		//bind
+		bind(mysock, res->ai_addr, res->ai_addrlen); 
+
+		//Listen to anything we can: 
+		listen(mysock,1);
+	
+		//Accept someone: 
+		address_length = sizeof their_address;
+		sr = accept(mysock,(struct sockaddr*) &their_address, &address_length); 
+		
+		struct sockaddr *info = (struct sockaddr*) &their_address; 
+		struct sockaddr_in * info_in = (struct sockaddr_in *) info; 
+		
+		//While accepted, keep interacting with that client: 
+		while(accepted){ 
+			memset(buf,0,sizeof(buf));
+			while(read(sr,buf,sizeof(buf))==-1);  //get the command  
+
+			if(!strcmp(buf,"get")){ 
+				short fileNameLen;   //Length of filename, as 16 bit int
+				int size;   		//Size of file, as 32 bit int
+				char * fileName = malloc(sizeof(char)*100);  //FileName c string
+				memset(fileName,0,sizeof(fileName)); 	
+				
+				//Read in the length of the filename and the filename
+				read(sr,&fileNameLen,sizeof(fileNameLen));  
+				fileNameLen = ntohs(fileNameLen); 
+				read(sr,fileName,fileNameLen+1); 
+				
+			
+				//Compute the size of the file: 
+				FILE *fp; 
+				if(fp = fopen(fileName,"r")){
+					struct stat st; 
+					stat(fileName, &st); 
+					size = st.st_size;  
+					fclose(fp); 
+				} else{
+					size = -1; 
+				}
+				//Send the size of the file
+				size = htonl(size); 
+				write(sr,&size,sizeof(size)); 
+				size = ntohl(size); 
+				
+				//If the file exists:
+				if(size != -1){
+				
+					//Calculate the MD5 Hash here: 
+					MHASH hash; 
+					hash = mhash_init(MHASH_MD5); 
+					char hashValue[16]; 
+					char buffer; 
+					fp = fopen(fileName,"r"); 
+					while(fread(&buffer,1,1,fp)){
+						mhash(hash,&buffer,1); 
+					}
+					mhash_deinit(hash,hashValue);
+					fclose(fp); 
+	
+				        //SEND HASH HERE.
+				        write(sr,hashValue,16); 
+					
+					
+					//Send the file: 
+					char fileBuffer[101]; 
+					int sent = 0; 
+					fp = fopen(fileName,"r");
+					while(sent < size){
+						size_t bytes_read; 
+						memset(fileBuffer,0,sizeof(fileBuffer)); 
+						bytes_read = fread(fileBuffer,1,sizeof(char)*100,fp); 
+						sent+= (int) bytes_read;  
+						write(sr,&sent,sizeof(sent)); 
+						write(sr,fileBuffer,100); 
+					}
+					fclose(fp); 
+				}
+			} else if(!strcmp(buf,"put")){
+	 
+				//Get the length of the file name, followed by the file name
+				short fileNameLen;  
+				int timeElapsed;
+				FILE * saveFile; 
+				int si=0; 
+				char * fileName = malloc(sizeof(char)*100);
+				memset(fileName,0,sizeof(fileName)); 
+				
+				//Read in the file name length, the file name, and the size of the file. 
+				read(sr,&fileNameLen,sizeof(fileNameLen)); 
+				fileNameLen = ntohs(fileNameLen); 
+				read(sr,fileName,100); 
+				read(sr,&si,sizeof(si)); 
+				si = ntohl(si); 
+				
+				
+				//If the file exists: 
+				if(si!=-1){
+					char fileBuffer[100];  	//C String to read each packet
+					int received = 0; 	//Number of bytes received so far
+					saveFile = fopen(fileName,"w");  //Open file for writing.
+				
+					//While we have not received all of the bytes, continue getting data. 
+					while(received < si){
+						int nread; //Number of bytes read
+						read(sr,&nread,sizeof(nread)); 
+						received = nread;  
+						read(sr,fileBuffer,100);   
+						fputs(fileBuffer,saveFile);  //Save each buffer to the file.  
+					}
+					fclose(saveFile); 
+					
+					
+					//Compute the MD5 Hash: 
+					MHASH hash; 
+					hash = mhash_init(MHASH_MD5); 
+					char hashValue[16]; 
+					char buffer; 
+					saveFile = fopen(fileName,"r"); 
+					while(fread(&buffer,1,1,saveFile)){
+						mhash(hash,&buffer,1); 
+					}
+					mhash_deinit(hash,hashValue);
+					fclose(saveFile); 
+					
+					
+					//Send the MD5 Hash: 
+					write(sr,hashValue,16); 
+				}
+
+			} else if(!strcmp(buf,"dir")){ //Working directory command 
+				int num = 0; int i; int len = 100; 
+				char *files = malloc(sizeof(char)*len); 
+				char fileNames[NUM][len]; 
+				
+				FILE *fp = popen("ls *","r"); 
+				while(fgets(files,len,fp) != NULL){  
+					strcpy(fileNames[num],files); 	
+					num++; 	
+				}
+				pclose(fp);
+				num = htonl(num); 
+				write(sr,&num,sizeof(num));
+				num = ntohl(num); 
+	
+				for(i = 0; i<num ;i++){ 
+					files = fileNames[i]; 
+					write(sr,files,len); 
+				}
+			} else if(!strcmp(buf,"xit")){  //Working Exit Command
+				accepted = 0; 		 	
+			} 
+		
+		
+		
+		} 
+		//close the socket
+		close(mysock); 
+	}
+}
+
+
+

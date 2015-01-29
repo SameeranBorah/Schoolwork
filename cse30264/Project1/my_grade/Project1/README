@@ -1,0 +1,21 @@
+John F. Lake, Jr. 
+CSE 30264- Computer Networks
+Project #1
+FTP Program
+
+
+For this program, I designed both a FTP server and an FTP client.  There are two directories in this archive: server and client. 
+
+Files in client directory: 
+myftp.c (Source file)
+myftp	(Binary)
+Makefile
+
+Files in server directory: 
+myftpd.c (Source file)
+myftpd (Binary)
+Makefile
+
+
+
+

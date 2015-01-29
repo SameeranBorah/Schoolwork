@@ -1,0 +1,29 @@
+John F. Lake, Jr. 
+CSE 30264
+Program 1
+
+
+	For this assignment, I made a UDP client which sends a message or file to a server and gets back a message with a timestamp as a result.  The files in my dropbox are the following: 
+
+File1.txt
+File2.txt 
+File3.txt  Simple text files for testing the client. 
+udpclient.c: C source code for the UDP client. 
+udpclient: Binary for my program
+README: Descriptive file for the assignment. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I received help from the socket guide given in class: http://beej.us/guide/bgnet/output/html/singlepage/bgnet.html#getaddrinfo, and I consulted the book as well.  

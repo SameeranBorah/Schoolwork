@@ -1,0 +1,18 @@
+-10 pts
+GET is not fully functional, see following testing outputs
+
+
+What operation do you want to perform?  (get, put, dir, xit)
+get
+Enter the name of the file. Ex: 'file.c'
+bigFile.avi
+Error transferring data.
+What operation do you want to perform?  (get, put, dir, xit)
+get
+Enter the name of the file. Ex: 'file.c'
+medFile.pdf
+Error transferring data.
+What operation do you want to perform?  (get, put, dir, xit)
+get
+Enter the name of the file. Ex: 'file.c'
+smallFile.html

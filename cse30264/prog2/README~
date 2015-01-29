@@ -1,0 +1,17 @@
+John F. Lake, Jr. 
+CSE 30264
+Program 2
+
+
+	For this assignment, I made a UDP server which reverses a message sent to it by a client and sends back the message with a time stamp.  
+
+ 
+	In this directory (jlake2/prog2/) I have 3 files: 
+udpserver.c: C source code for the UDP server.
+udpserver: Binary for my program
+README: Descriptive file for the assignment. 
+
+	While testing my program, I ran it on both the student machines and the whiz.cse.nd.edu machine.  I was able to compile and run it from both types of machines. To run it on the whiz machine, I needed to use the /usr/sfw/bin/gcc call with the extra flags set for networking.  
+
+
+I received help from the socket guide given in class: http://beej.us/guide/bgnet/output/html/singlepage/bgnet.html#getaddrinfo, and I consulted the book as well.  

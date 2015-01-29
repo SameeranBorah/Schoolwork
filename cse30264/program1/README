@@ -1,0 +1,29 @@
+John F. Lake, Jr. 
+CSE 30264
+Program 1
+
+
+	For this assignment, I made a UDP client which sends a message or file to a server and gets back a message with a timestamp as a result.  The files in my dropbox are the following: 
+
+File1.txt
+File2.txt 
+File3.txt  Simple text files for testing the client. 
+udpclient.c: C source code for the UDP client. 
+udpclient: Binary for my program
+README: Descriptive file for the assignment. 
+
+Endian-ness: 
+	Even though I never used the htons() function, I presume that the getaddrinfo() function implicitly does this (as I pass the port number as an argument to it.)  
+	I used a debugging mechanism to check the port number passed to my sendto() function, and it is changed from little-endian to big-endian to accomodate the data sent over the network.  My guess is that the servers are big-endian, as my code will not work if I explicitly make the port number little-endian. I also assume that both of the servers are the same because my program works the same way with both of them.    
+
+
+
+
+
+
+
+
+
+
+
+I received help from the socket guide given in class: http://beej.us/guide/bgnet/output/html/singlepage/bgnet.html#getaddrinfo, and I consulted the book as well.  

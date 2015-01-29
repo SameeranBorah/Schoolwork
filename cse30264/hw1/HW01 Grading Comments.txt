@@ -1,0 +1,23 @@
+Name: John F. Lake, Jr.
+
+Score: 46/50
+
+Problem 1(10/10)
+
+Problem 2(5/5)
+
+Problem 3(4/4)
+
+Problem 4(14/16)
+c. -2pts. BDP is the MAXIMUM amount of data/bits, i.e., the "upper-bound" in transit, not necessarily the number of bits at "any given time" between two nodes. If at any given time, the link is 
+fully utilized between every node pair, the network performance (and the quality of user experience) would be severely degraded. 
+
+d. -2pt. 
+2.5MB != 2.5*10^6 bits, you'd have to further multiple it by 8 to transform from B to b.  
+We require at least one RTT from sending the request before the first bit
+of the picture could begin arriving at the ground (TCP would take longer).
+25 MB is 200Mb. Assuming bandwidth delay only, it would then take
+200Mb/1000Mbps = 0.2 seconds to finish sending, for a total time of 0.2+
+2.57 = 2.77 sec until the last picture bit arrives on earth.
+
+Problem 5(15/15)

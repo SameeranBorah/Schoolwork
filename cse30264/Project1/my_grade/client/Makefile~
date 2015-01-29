@@ -1,0 +1,7 @@
+all: myftp
+
+myftpd: myftp.c 
+
+	gcc myftp.c -o myftp -lmhash
+	
+clean: rm -rf myftp

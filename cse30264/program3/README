@@ -1,0 +1,40 @@
+John F. Lake, Jr. 
+CSE 30264
+RPC Program (Program 3)
+
+
+
+
+************
+ORGANIZATION
+************
+In the program3 directory, I have the following directories with the following files: 
+
+sub.x
+README
+makefile
+submarine/
+	submarine.c
+	makefile
+	
+rpc_subd/
+	rpc_subd.c
+	makefile
+	
+	
+	
+	
+*********
+COMPILING
+*********
+	
+***In order for this to compile correctly, you need to call 'make' in the program3 directory FIRST (so that it can perform rpcgen) and then call make seperately in each of the subdirectories.***
+
+
+
+*************
+EXTRA FEATURE
+*************
+
+As suggested in the program document, I implemented depth charges from the destroyer.  The detroyer, controlled by the user (client), can drop 3 depth charges in a game.  Once a depth charge is placed, that spot will be marked with an X to remind the player where they left their depth charge.   If the submarine hits one, the game will end.  
+	
