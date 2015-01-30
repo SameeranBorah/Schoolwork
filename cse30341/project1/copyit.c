@@ -26,7 +26,6 @@
 #define WRIER 3
 #define OTHER 4
 
-
 //#define DEBUG 1 //Used for debugging (printing out file contents, among other things.)
 
 /*
@@ -88,7 +87,7 @@ int main(int argc,char** argv){
 	int tp=0; //File descriptor for target program
 	int numBytes=0; //Number of bytes read or written
 	char * buf=NULL; //Buffer that has NOBYTES (number of bytes); used to read and write 
-	if((buf = malloc(sizeof(char)*NOBYTES))==0) error(OTHER); 
+	if((buf = malloc(NOBYTES))==0) error(OTHER); 
 
 	//sigaction() is more portable than signal():
 	struct sigaction sigAct;
@@ -121,7 +120,10 @@ int main(int argc,char** argv){
 				//Here, we have successfully opened both files.
 				//Want to read from file: 
 				do{
-					memset(buf,0,sizeof(buf)); 
+					memset(buf,0,strlen(buf)); 
+					#ifdef DEBUG
+						printf("Buffer: ####%s####\n",buf);
+					#endif
 					if((numBytes = read(sp,buf,NOBYTES))==-1){
 						//Error reading from file
 						//Deal with error here.
@@ -133,28 +135,52 @@ int main(int argc,char** argv){
 							error(REAER); 
 						}
 					}else{
+				
 
 						//Increment the total number of bytes copied: 
 						totalBytes+=numBytes;
+						if(numBytes < NOBYTES){
+							#ifdef DEBUG
+								//Print out results: 
+								printf("@@@@%s@@@@",buf);
+								printf("%d : string length\n",strlen(buf));	
+							#endif
+							if((write(tp,buf,strlen(buf)))==-1){
+								//If it's an interrupt, try writing again, otherwise, exit.
+								if(errno == EINTR){
+									//Try to read again.
+									continue; 
+								}else{
+									error(WRIER); 
+								}
+							}
+							numBytes = 0;
+						}else{
 
-						#ifdef DEBUG
-							//Print out results: 
-							if(printf("%s",buf)<0) error(OTHER); 
-						#endif
+							#ifdef DEBUG
+								//Print out results: 
+								printf("@@@@%s@@@@",buf);
+								printf("%d : string length\n",strlen(buf));	
+							#endif
 
 
-						//Take the buffer and write to the other file
-						if((write(tp,buf,strlen(buf)))==-1){
-							//If it's an interrupt, try writing again, otherwise, exit.
-							if(errno == EINTR){
-								//Try to read again.
-								continue; 
-							}else{
-								error(WRIER); 
+							//Take the buffer and write to the other file
+							if((write(tp,buf,strlen(buf)))==-1){
+								//If it's an interrupt, try writing again, otherwise, exit.
+								if(errno == EINTR){
+									//Try to read again.
+									continue; 
+								}else{
+									error(WRIER); 
+								}
 							}
 						}
-						if(numBytes < NOBYTES) numBytes = 0; 
 					}
+					#ifdef DEBUG
+						printf("Bytes read: %d\n",numBytes);
+						sleep(1000);
+					#endif
+					
 				}while (numBytes>0);	
 			}
 			//Need to close the files:
