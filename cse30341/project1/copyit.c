@@ -22,6 +22,7 @@
 #define NOBYTES 256 
 
 #define ARGER 1
+#define AR2ER 5
 #define REAER 2
 #define WRIER 3
 #define OTHER 4
@@ -40,6 +41,10 @@ void error(int errorCode){
 			printf("copyit: Wrong number of arguments!\n"); 
 			printf("Usage: copyit <sourcefile> <targetfile>\n"); 
 			exit(1); 
+			break;
+		case AR2ER:
+			printf("copyit: Can't copy file to itself!\n");
+			exit(1);
 			break;
 		case REAER:
 			printf("copyit: Error reading.\n");
@@ -104,7 +109,10 @@ int main(int argc,char** argv){
 	//If there are not exactly three arguments, send an error code to the user and exit. 
 	if(argc!=3){
 		error(ARGER); 
+	}else if(strcmp(argv[1],argv[2])==0){
+		error(AR2ER);
 	}else{
+	
 		//Open the source file
 		if((sp = open(argv[1],O_RDONLY))==-1){
  			//Error, value of -1 returned
