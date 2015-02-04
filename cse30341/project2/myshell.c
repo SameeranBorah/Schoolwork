@@ -110,11 +110,12 @@ int main(){
 	char * args[MAX_ARGS];
 	char input[BUF_LEN];
 	int shellRunning = 1;
+	pid_t pid;
 
 
 	while(shellRunning){
 
-		printf("myshell>");
+		printf("\nmyshell>");
 		int numArgs;
 		if((numArgs = getInput(input,args))==-1){
 			//Print error message
@@ -127,7 +128,7 @@ int main(){
 				case START:;
 					//Here, we will fork and call the execvp() function: 
 					//TODO: Need to make sure that you check for correct number of args
-					pid_t pid = fork();
+					pid = fork();
 					//If this is a child process, run: 
 					if(pid<0){
 						//Error occured. 
@@ -142,7 +143,10 @@ int main(){
 					}
 
 					break;
-				case WAIT:
+				case WAIT:;
+					if((pid = wait())<0) printf("myshell: No processes left.");
+					else printf("myshell: process %d exited.\n",pid);
+			
 					break;
 				case RUN:
 					break;
