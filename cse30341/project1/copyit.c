@@ -19,7 +19,7 @@
 #include <unistd.h>
 
 //I opted for 256 bytes (.25 kB) so that I could see the sigaction message go off with large files. 
-#define NOBYTES 256 
+#define NOBYTES 50
 
 #define ARGER 1
 #define AR2ER 5
