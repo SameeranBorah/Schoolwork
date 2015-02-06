@@ -24,20 +24,23 @@ def getNFA(filename):
 			#Get the alphabet. 
 			alpha = []
 			alpha = re.split(',|\n', line[2:-1])
+			if len(alpha) == 1 and alpha[0] == "":
+				return -1
 			n['alphabet'] = alpha
-
 
 		elif(line[0] == 'Q'):
 			#Get the states:
 			states = []
 			states = re.split(',|\n', line[2:-1])
+			if len(states) == 1 and states[0] == "":
+				return -1
+
 			n['states'] = states
 
 
 		elif(line[0] == 'T'):
 			#Increase the number of transitions by one:
 			numTransitions+=1
-
 	
 			#Place the transition function inside a list
 			# t[0] is the starting point
@@ -45,13 +48,21 @@ def getNFA(filename):
 			# t[2] is the destination point
 			t = []
 			t = re.split(',|\n', line[2:-1])
+			if len(t) == 1 and t[0] == "":
+				return -1
+			elif t[0] not in n['states']:
+				return -1	
+			elif t[1] not in n['alphabet'] and t[1] != 'e':
+				return -1
+
 			trans[numTransitions] = t
 
 		
 		elif(line[0] == 'S'):
 			#Obtain the starting state:
+			s = []
 			s = re.split(',|\n', line[2:-1])
-			n['start'] = ''.join(s)
+			n['start'] = s
 
 
 		else:
@@ -73,12 +84,20 @@ def processInput(nfa):
 	#Get each input tape and delimit it. 
 	for i in range(numInputTapes):
 
+		#Get the input: 
 		it = raw_input("")
 		inputTape = re.split(',',it)
+
+		#Used to make sure the input is valid: 
+		validInput=1;
+
+		#Set the currentStates to whatever the start state is: 
 		currentStates = []
-		currentStates.append(nfa['start'])
+		currentStates = nfa['start']
+
+
+		#newStates is the set of states to be transitioned to
 		newStates = []
-		print ";",nfa['start']
 		for key,el in nfa['transitions'].iteritems():
 			if(el[1] == 'e' and (el[0] in currentStates or el[0] in newStates)):
 				if(el[2] not in newStates):
@@ -89,14 +108,30 @@ def processInput(nfa):
 		if(len(newStates)>0):
 			currentStates = newStates
 		newStates = []
-		print currentStates
 
-	
+		print ";", ", ".join(str(x) for x in sorted(currentStates))
+		#If the input empty, check and see if the first state is an accepting state: 
+		if len(inputTape) == 1 and inputTape[0] == "":
+			acc = 0;
+			for cs in currentStates:
+				if cs in nfa['acceptStates']:
+					acc=1;
+			if acc == 1:
+				print "ACCEPT!\n"
+			else:
+				print "REJECT!\n"
+			continue
+				
+
 		for input in inputTape:
 			hasInput ={}
 			for s in currentStates:
 				hasInput[s] = 0;
 				
+
+
+			
+
 			#Move from state to state depending on the transition rule: 
 			if input in nfa['alphabet']:
 				newVals=1
@@ -113,7 +148,7 @@ def processInput(nfa):
 							newStates.append(el[2])
 
 
-
+				#Remove any states that didn't have any transitions:
 				numsToRemove = []
 				for state in currentStates:
 					if(hasInput[state]==0):
@@ -126,37 +161,40 @@ def processInput(nfa):
 				while(newVals == 1):	
 					newVals = 0
 					for key,el in nfa['transitions'].iteritems():
-
 						if(el[1] == 'e' and (el[0] in currentStates or el[0] in newStates)):
-
 							if(el[2] not in newStates):
-
 								newVals = 1
 								newStates.append(el[2])
-
 								if(el[0] not in newStates):
 									newStates.append(el[0])
-
-						
-								#	print newStates
 				
 			else:
 				print "Input not in alphabet for this NFA."
+				print "REJECT!"
+				validInput=0
 				break;
-					
-			print input, ";", newStates
+			newStates = sorted(newStates)				
+			print input, ";", ", ".join(str(x) for x in newStates)
 			currentStates = newStates
+			if(len(currentStates) == 0):
+				break;
 			newStates = []
-		
-		accept = 0;	
-		for cs in currentStates:
-			if(cs in nfa['acceptStates']):
-				accept = 1
-		if(accept == 1):
-			print "ACCEPT!"
-		else: 
-			print "REJECT!"
 
+		#Either accept or reject the given input: 
+		if(validInput == 1):
+			accept = 0;	
+			for cs in currentStates:
+				if(cs in nfa['acceptStates']):
+					accept = 1
+			if(accept == 1):
+				print "ACCEPT!\n"
+			else: 
+				print "REJECT!\n"
+			
+			
+				
+				
+	
 
 
 
