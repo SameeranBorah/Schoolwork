@@ -62,6 +62,8 @@ def getNFA(filename):
 			#Obtain the starting state:
 			s = []
 			s = re.split(',|\n', line[2:-1])
+			if len(s) == 1 and s[0] == "":
+				return -1
 			n['start'] = s
 
 
@@ -69,8 +71,10 @@ def getNFA(filename):
 			#Obtain the end states:
 			f = []
 			f = re.split(',|\n', line[2:-1])
-			n['acceptStates'] = f
+			if len(f) == 1 and f[0] == "":
+				return -1
 
+			n['acceptStates'] = f
 	fd.close()
 	n['transitions'] = trans
 	return n
@@ -79,7 +83,6 @@ def getNFA(filename):
 def processInput(nfa):
 	#for input, the first line has a number with the inputs:
  	numInputTapes = int(raw_input(""))
-
 
 	#Get each input tape and delimit it. 
 	for i in range(numInputTapes):
@@ -92,7 +95,6 @@ def processInput(nfa):
 		validInput=1;
 
 		#Set the currentStates to whatever the start state is: 
-		currentStates = []
 		currentStates = nfa['start']
 
 
@@ -105,6 +107,7 @@ def processInput(nfa):
 					if(el[0] not in newStates):
 						newStates.append(el[0])
 							
+		#If there are new states to go to, reset current states to those states.
 		if(len(newStates)>0):
 			currentStates = newStates
 		newStates = []
