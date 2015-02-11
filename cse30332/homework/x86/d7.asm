@@ -24,16 +24,29 @@ start:
                         ; remember that this will grow *down*, towards SS
         sti             ; turn the interrupts back on
 	
+	;Set graphics mode:
 	mov ah, 0h
 	mov al, 13h
 	int 10h
 
+	;J:
 	mov ah, 0Eh
-	mov al, 43h
+	mov al, 4Ah
+	mov bh, 0h
 	mov bl, 01h
 	int 10h
+
+	;F:
 	mov ah, 0Eh
 	mov al, 46h
+	mov bh, 0h
+	mov bl, 0Ch
+	int 10h
+
+	;L:
+	mov ah, 0Eh
+	mov al, 4Ch
+	mov bh, 0h
 	mov bl, 04h
 	int 10h
 
