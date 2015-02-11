@@ -95,7 +95,7 @@ def processInput(nfa):
 		validInput=1;
 
 		#Set the currentStates to whatever the start state is: 
-		currentStates = nfa['start']
+		currentStates = nfa['start'][:]
 
 
 		#newStates is the set of states to be transitioned to
