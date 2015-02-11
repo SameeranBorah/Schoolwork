@@ -26,18 +26,17 @@ start:
 
 	jmp $	; loop until the power goes out
 
-;; START OF PROCEDURE AREA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; start of procedure print
 print:
-	mov ah, 0Eh ;Set up teletype mode
-.loop:
-	lodsb  ;Load whatever is in si to al
-	cmp al, 0h
-	je .equal
-	int 10h
-	jmp .loop
-.equal:
+	mov ah, 0Eh 	;Set up teletype mode
+.loop:			;Loop so that you can print each char
+	lodsb         	;Load whatever is in si to al
+	cmp al, 0h	;Check if there is a null char, and quit if there is. 
+	je .exit
+	int 10h		;Issue an interrupt so that you can display the character. 
+	jmp .loop	;Loop through each character in the word
+.exit:			;When you're done with the loop, go here so you can return to where the IP was before print.
 	ret
 ; end of procedure print
 
