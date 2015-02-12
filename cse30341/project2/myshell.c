@@ -206,10 +206,33 @@ int main(){
 					break;
 					//Right here, we're going to issue SIGKILL, SIGSTOP, and SIGCONT signals to the processes
 				case KILL:
+					if(numArgs != 2){
+						printf("myshell: ERROR, WRONG NUMBER OF ARGUMENTS!");	
+					}else{
+						pid = atoi(args[1]);	
+						kill(pid,SIGKILL);
+						printf("myshell: process %d killed",pid);
+					}
 					break;
 				case STOP:
+					if(numArgs != 2){
+						printf("myshell: ERROR, WRONG NUMBER OF ARGUMENTS!");	
+					}else{
+						pid = atoi(args[1]);	
+						kill(pid,SIGSTOP);
+						printf("myshell: process %d stopped",pid);
+					}
+
 					break;
 				case CONT:
+					if(numArgs != 2){
+						printf("myshell: ERROR, WRONG NUMBER OF ARGUMENTS!");	
+					}else{
+						pid = atoi(args[1]);	
+						kill(pid,SIGCONT);
+						printf("myshell: process %d continued",pid);
+					}
+
 					break;
 				case -1:
 					//TODO:Make error message
