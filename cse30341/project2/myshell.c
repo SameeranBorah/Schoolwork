@@ -5,7 +5,11 @@
  *
  */
 //Debugging: 
-#define DEBUG 1
+//TODO: fix error messages
+//TODO: Fix start command
+//TODO: Implement kill, stop, and continue
+
+//#define DEBUG 1
 
 
 //Includes: 
@@ -14,6 +18,8 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 //Defines: 
 #define BUF_LEN 4096
@@ -49,7 +55,7 @@ int interpretCommand(char * command){
 	else if(strcmp(command,"continue")==0) 
 		return CONT;
 	else
-		printf("myshell: ERROR, Unknown command %s\n",command);
+		printf("myshell: ERROR, Unknown command %s",command);
 		return -1;
 }
 
@@ -62,10 +68,13 @@ int interpretCommand(char * command){
 int getInput(char *input, char ** args){
 	//Get user input: 
 	if(fgets(input,BUF_LEN,stdin)!=NULL){
+		if(strcmp(input,"\n")==0){
+			return -1;
+		}
 
 		//Testing user input: 
 		#ifdef DEBUG
-			printf("You entered: %s\n",input);
+			printf("You entered: %s",input);
 		#endif
 
 		//Interpret the input: 
@@ -78,7 +87,7 @@ int getInput(char *input, char ** args){
 					return -1;
 				}else{	
 					#ifdef DEBUG
-						printf("Command: %s\n",args[argsNo]);
+						printf("Command: %s",args[argsNo]);
 					#endif
 					//Increment the number of arguments read: 
 					argsNo++;
@@ -88,7 +97,7 @@ int getInput(char *input, char ** args){
 					break;
 				}else{
 					#ifdef DEBUG
-						printf("Argument %d: %s\n",argsNo,args[argsNo]);
+						printf("Argument %d: %s",argsNo,args[argsNo]);
 					#endif
 					argsNo++;
 				}
@@ -115,41 +124,87 @@ int main(){
 
 	while(shellRunning){
 
+	
 		printf("\nmyshell>");
 		int numArgs;
+		int status;
+		int s;
 		if((numArgs = getInput(input,args))==-1){
 			//Print error message
 		}else{
 			//Interpret/use the input: 
 			switch(interpretCommand(args[0])){
 				case EXIT:
-					shellRunning =0;
+					shellRunning  = 0;
 					break;
 				case START:;
 					//Here, we will fork and call the execvp() function: 
-					//TODO: Need to make sure that you check for correct number of args
+					if(numArgs == 1){
+						printf("myshell: ERROR, NEED TO PASS COMMAND IN!");
+						break;
+					}
 					pid = fork();
+				
 					//If this is a child process, run: 
 					if(pid<0){
 						//Error occured. 
+						//TODO: Make error message
 					}
 					else if(pid==0){
 						//Execute the program, with args+2 being the pointer to the array of arguments.
-						if(execvp(args[1],args+2)<0){
-							printf("myshell: ERROR %s\n",strerror(errno));
+						if(execvp(args[1],args+1)<0){
+							printf("\nmyshell: ERROR %s",strerror(errno));
 						}
 					}else{
-						printf("myshell: process %d started.\n",pid);
+						printf("myshell: process %d started.",pid);
+						
+					}
+					break;
+				case WAIT:;
+					if((pid = wait(&status))<0){
+						 printf("myshell: no processes left.");
+					}else{
+						if(WIFSIGNALED(status)){	
+							s = WTERMSIG(status);
+							printf("myshell: process %d exited with signal %d: %s",pid,s,strsignal(s));
+						}else if(WIFEXITED(status)){
+							printf("myshell: process %d exited normally with return value 0",pid);
+						}
+
 					}
 
 					break;
-				case WAIT:;
-					if((pid = wait())<0) printf("myshell: No processes left.");
-					else printf("myshell: process %d exited.\n",pid);
-			
-					break;
 				case RUN:
+					//Very similar to start:
+					//Here, we will fork and call the execvp() function: 
+					if(numArgs == 1){
+						printf("myshell: ERROR, NEED TO PASS COMMAND IN!");
+						break;
+					}
+					pid = fork();
+
+					//If this is a child process, run: 
+					if(pid<0){
+						//Error occured. 
+						//TODO: Make error message
+					}
+					else if(pid==0){
+						//Execute the program, with args+2 being the pointer to the array of arguments.
+						if(execvp(args[1],args+1)<0){
+							printf("\nmyshell: ERROR %s",strerror(errno));
+						}
+					}else{
+						pid = waitpid(pid,&status,0);
+						if(WIFSIGNALED(status)){	
+							s = WTERMSIG(status);
+							printf("myshell: process %d exited abnormally with signal %d: %s",pid,s,strsignal(s));
+						}else if(WIFEXITED(status)){
+							printf("myshell: process %d exited normally with return value 0",pid);
+						}
+					}
+
 					break;
+					//Right here, we're going to issue SIGKILL, SIGSTOP, and SIGCONT signals to the processes
 				case KILL:
 					break;
 				case STOP:
@@ -157,7 +212,7 @@ int main(){
 				case CONT:
 					break;
 				case -1:
-					//Error:
+					//TODO:Make error message
 					break;
 
 
