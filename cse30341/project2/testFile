@@ -1,0 +1,8 @@
+start ls
+wait
+start date
+wait
+run echo "heyyyy"
+wait
+wait
+quit
