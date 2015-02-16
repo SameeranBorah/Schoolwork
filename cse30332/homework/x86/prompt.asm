@@ -2,7 +2,7 @@
 ;x86 Daily 9
 
 BITS 16
-%define BUFLOC 201h
+%define BUFLOC 2fh
 
 start:
 	; here's our prelude of setting up the data and stack sections
@@ -42,13 +42,13 @@ prompt:
 	int 10h
 	mov al, 0Ah
 	int 10h
-	mov di, 0h	
-	mov si, BUFLOC  ;Move the words at BUFLOC into si
-	call print
-	mov di, BUFLOC
-
-;	mov si, promptString
+;	mov di, 0h	
+;	mov si, BUFLOC  ;Move the words at BUFLOC into si
 ;	call print
+;	mov di, BUFLOC
+
+	mov si, promptString
+	call print
 	jmp .loop	;Go back to the loop
 
 
