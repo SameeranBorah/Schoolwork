@@ -2,25 +2,28 @@
 ;x86 Daily 9
 
 BITS 16
-%define BUFLOC 2fh
+%define BUFLOC 201h
 
 start:
 	; here's our prelude of setting up the data and stack sections
         cli
         mov ax, 07C0h
         mov ds, ax
+	mov es, ax
         add ax, 0020h
         mov ss, ax
         mov sp, 1000h
         sti
 	;End of prelude
+	;cld
 
 	call prompt	
 	jmp $	; loop until the power goes out
 
 prompt:
-	mov si, promptString
+	mov si, promptString ;Print the first prompt: 
 	call print
+
 	mov di, BUFLOC       ;Set the di location to the buffer location
 .loop:		
 	mov ah, 0 
@@ -36,27 +39,31 @@ prompt:
 
 .newline:		
 			;Here, we will check if bufloc is equal to e, c, h, and o
-
 	mov ah, 0Eh     ;Set mode to teletype
 	mov al, 0Dh	;Print a carriage return and a newline:
 	int 10h
 	mov al, 0Ah
 	int 10h
-;	mov di, 0h	
-;	mov si, BUFLOC  ;Move the words at BUFLOC into si
-;	call print
-;	mov di, BUFLOC
+	call checkEcho
 
-	mov si, promptString
-	call print
+	;mov si, promptString
+	;call print
 	jmp .loop	;Go back to the loop
+
+
+checkEcho:
+	mov di, 0	
+	mov si, BUFLOC  ;Move the words at BUFLOC into si
+	call print
+	mov di, BUFLOC
+	ret
 
 
 print:
 	mov ah, 0Eh 	;Set up teletype mode
 .loop:			;Loop so that you can print each char
 	lodsb		;Get value from SI and put it in AL
-	cmp al, 0h	;Check if there is a null char, and quit if there is. 
+	cmp al, 0	;Check if there is a null char, and quit if there is. 
 	je .exit
 	int 10h		;Issue an interrupt so that you can display the character. 
 	jmp .loop	;Loop through each character in the word
