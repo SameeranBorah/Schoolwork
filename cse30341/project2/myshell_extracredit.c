@@ -16,6 +16,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 //Defines: 
 #define BUF_LEN 4096
@@ -110,7 +112,8 @@ int getInput(char *input, char ** args){
  * Starts a process and keeps track of it until a user calls wait
  */
 void start(int numArgs, pid_t pid, char** args,int *numP){ 
-//Here, we will fork and call the execvp() function: 
+//Here, we will fork and call the execvp() function:
+	char** realArgs = malloc(4096);
 	if(numArgs == 1) error(0,ARGER);
 	else{
 		//Fork and create a child process:
@@ -118,8 +121,43 @@ void start(int numArgs, pid_t pid, char** args,int *numP){
 	
 		//Child process:
 		else if(pid==0){
+			int hasIn = 0;
+			int hasOut = 0;
+			int hasBoth = 0;
+			int fdIn;
+			int fdOut;
+			int n;
+			int i = 0;
+			for(n = 1;n<numArgs;n++){
+				if(args[n][0] == '<'){
+					//Need to make an infile: 
+					if((fdIn = open(args[n]+1,O_RDONLY,0))!=-1){
+						if(hasOut) hasBoth = 1;
+						else hasIn=1;	
+					}
+				}else if (args[n][0]=='>'){
+					int mode = 400;
+					//Need to make an outfile:
+					if((fdOut = creat(args[n]+1,mode))!=-1){
+						if(hasIn) hasBoth = 1;
+						else hasOut = 1;
+					}
+				}else{
+					realArgs[i] = args[n];
+					i++;
+				}
+			}
+			if(hasBoth){
+				dup2(fdOut,1);
+				dup2(fdIn,0);
+			}else if (hasIn){
+				dup2(fdIn,0);
+			}else if (hasOut){
+				dup2(fdOut,1);
+			}
+
 			//Execute the program, with args+2 being the pointer to the array of arguments.
-			if(execvp(args[1],args+1)<0) error(errno,0);
+			if(execvp(args[1],realArgs)<0) error(errno,0);
 		//Parent Process:
 		}else{
 			printf("myshell: process %d started.",pid);
@@ -153,6 +191,7 @@ void waitFor(int s, int status, pid_t pid,int* numP){
 void run(int numArgs, int s,int status, pid_t pid, char** args){
 	//Very similar to start:
 	//Here, we will fork and call the execvp() function: 
+	char** realArgs = malloc(4096);
 	if(numArgs == 1) error(0,ARGER);
 	else{
 
@@ -161,8 +200,43 @@ void run(int numArgs, int s,int status, pid_t pid, char** args){
 
 		//Child process:
 		else if(pid==0){
+			int hasIn = 0;
+			int hasOut = 0;
+			int hasBoth = 0;
+			int fdIn;
+			int fdOut;
+			int n;
+			int i = 0;
+			for(n = 1;n<numArgs;n++){
+				if(args[n][0] == '<'){
+					//Need to make an infile: 
+					if((fdIn = open(args[n]+1,O_RDONLY,0))!=-1){
+						if(hasOut) hasBoth = 1;
+						else hasIn=1;	
+					}
+				}else if (args[n][0]=='>'){
+					int mode = 400;
+					//Need to make an outfile:
+					if((fdOut = creat(args[n]+1,mode))!=-1){
+						if(hasIn) hasBoth = 1;
+						else hasOut = 1;
+					}
+				}else{
+					realArgs[i] = args[n];
+					i++;
+				}
+			}
+			if(hasBoth){
+				dup2(fdOut,1);
+				dup2(fdIn,0);
+			}else if (hasIn){
+				dup2(fdIn,0);
+			}else if (hasOut){
+				dup2(fdOut,1);
+			}
+
 			//Execute the program, with args+2 being the pointer to the array of arguments.
-			if(execvp(args[1],args+1)<0) error(errno,0);
+			if(execvp(args[1],realArgs)<0) error(errno,0);
 		//Parent:
 		}else{
 			if((pid = waitpid(pid,&status,0))<0)error(errno,0);

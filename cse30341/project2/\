@@ -1,9 +1,13 @@
 /*
  * John F. Lake, Jr. 
  * CSE30341, Project 2
- * Myshell command prompt
+ * Myshell
  *
  */
+//Debugging: 
+//TODO: fix error messages
+//TODO: Fix start command
+//TODO: Implement kill, stop, and continue
 
 //#define DEBUG 1
 
@@ -27,7 +31,6 @@
 #define KILL 5
 #define STOP 6
 #define CONT 7
-#define ARGER 1
 
 
 
@@ -62,7 +65,7 @@ int interpretCommand(char * command){
  *
  */
 void error(int num,int argFlag){
-	if(argFlag == ARGER){
+	if(argFlag == 1){
 		printf("myshell: error: wrong number of arguments!");
 	}else
 		printf("myshell: error: %s",strerror(num));
@@ -72,7 +75,7 @@ void error(int num,int argFlag){
  * getInput() returns the number of arguments read
  * @param input The input string from the user.
  * @param args The array of arguments from the user.
- * @param return int (Number of arguments when successful, -ARGER if a failure occurs)
+ * @param return int (Number of arguments when successful, -1 if a failure occurs)
  */
 int getInput(char *input, char ** args){
 	//Get user input: 
@@ -105,13 +108,13 @@ int getInput(char *input, char ** args){
 	}
 }
 
-/*
- * Start
- * Starts a process and keeps track of it until a user calls wait
- */
-void start(int numArgs, pid_t pid, char** args,int *numP){ 
+
+/*Functions to make the main function cleaner*/
+
+//Start command: 
+void start(int numArgs, pid_t pid, char** args){ 
 //Here, we will fork and call the execvp() function: 
-	if(numArgs == 1) error(0,ARGER);
+	if(numArgs == 1) error(0,1);
 	else{
 		//Fork and create a child process:
 		if((pid = fork())<0) error(errno,0);
@@ -123,16 +126,12 @@ void start(int numArgs, pid_t pid, char** args,int *numP){
 		//Parent Process:
 		}else{
 			printf("myshell: process %d started.",pid);
-			(*numP)++;
 		}
 	}
 }
 
-/*
- * Wait
- * Waits for a process to finish and prints the exit code
- */
-void waitFor(int s, int status, pid_t pid,int* numP){
+//wait command: 
+void waitFor(int s, int status, pid_t pid){
 	if((pid = wait(&status))<0){
 		error(errno,0);
 	}else{
@@ -142,76 +141,9 @@ void waitFor(int s, int status, pid_t pid,int* numP){
 		}else if(WIFEXITED(status)){
 			printf("myshell: process %d exited normally with return value 0",pid);
 		}
-		(*numP)--;
 	}
 }
 
-/*
- * Run
- * Like start, but immediately exits. 
- */
-void run(int numArgs, int s,int status, pid_t pid, char** args){
-	//Very similar to start:
-	//Here, we will fork and call the execvp() function: 
-	if(numArgs == 1) error(0,ARGER);
-	else{
-
-		//Fork/create child:
-		if((pid = fork())<0) error(errno,0);
-
-		//Child process:
-		else if(pid==0){
-			//Execute the program, with args+2 being the pointer to the array of arguments.
-			if(execvp(args[1],args+1)<0) error(errno,0);
-		//Parent:
-		}else{
-			if((pid = waitpid(pid,&status,0))<0)error(errno,0);
-			else{
-				if(WIFSIGNALED(status)){	
-					s = WTERMSIG(status);
-					printf("myshell: process %d exited abnormally with signal %d: %s",pid,s,strsignal(s));
-				}else if(WIFEXITED(status)){
-					printf("myshell: process %d exited normally with return value 0",pid);
-				}
-			}
-		}
-	}
-}
-
-
-//Handles kill, stop, and continue
-void killStopCont(int numArgs,int s, int status,int type, pid_t pid, char** args,int*numP){
-	if(numArgs != 2){
-		error(0,ARGER);
-	}else{
-		pid = atoi(args[1]);	
-		switch(type){
-			case KILL: 
-				if(kill(pid,SIGKILL)<0) error(errno,0);
-				else{
-					if((pid = waitpid(pid,&status,0))<0) error(errno,0);
-					else{
-						if(WIFSIGNALED(status)){	
-							s = WTERMSIG(status);
-							printf("myshell: process %d exited abnormally with signal %d: %s",pid,s,strsignal(s));
-						}else if(WIFEXITED(status)){
-							printf("myshell: process %d exited normally with return value 0",pid);
-						}
-					}
-				}
-				break;
-			case STOP: 
-				if(kill(pid,SIGSTOP)<0) error(errno,0);
-				else printf("myshell: process %d stopped",pid);
-				break;
-			case CONT:
-				if(kill(pid,SIGCONT)<0) error(errno,0);
-				else printf("myshell: process %d continued",pid);
-				break;
-		}
-		(*numP)--;
-	}
-}
 
 
 /*
@@ -219,27 +151,19 @@ void killStopCont(int numArgs,int s, int status,int type, pid_t pid, char** args
  *If the user calls ./myshell [NAME], they can place their name in the promt (like a bash shell)
  */
 int main(int argc, char ** argv){
-	//Easter egg for making a more personalized shell: 
 	int personal = 0;
 	if(argc >1) personal = 1;
 
-
-	//Argument buffer, input buffer, flag for keeping the program running, and the pid variable:
 	char * args[MAX_ARGS];
 	char input[BUF_LEN];
 	int shellRunning = 1;
 	pid_t pid;
 
-
-	//Used to keep track of the processes currently running: 
-	int numProcesses=0;
-	
-
 	while(shellRunning){
 
 		//Allow the user to pass their name as an argument (simply cosmetic):
 		if(personal)
-			printf("\n[myshell-%s-]$",argv[1]);
+			printf("\nmyshell-%s-$",argv[1]);
 		else
 			printf("\nmyshell>");
 
@@ -249,30 +173,74 @@ int main(int argc, char ** argv){
 		int s;
 		if((numArgs = getInput(input,args))==-1){
 			shellRunning = 0;
-			exit(0);
 		}else if (numArgs == 0){
 
 		}else {
-			int command = interpretCommand(args[0]);
 			//Interpret/use the input: 
-			switch(command){
+			switch(interpretCommand(args[0])){
 				case EXIT:
 					shellRunning  = 0;
 					break;
 				case START:
-					start(numArgs,pid,args,&numProcesses);
+					start(numArgs,pid,args);
 					break;
 				case WAIT:
-					waitFor(s,status,pid,&numProcesses);			
+					waitFor(s,status,pid);			
 					break;
 				case RUN:
-					run(numArgs,s,status,pid,args);
+					//Very similar to start:
+					//Here, we will fork and call the execvp() function: 
+					if(numArgs == 1) error(0,1);
+					else{
+
+						//Fork/create child:
+						if((pid = fork())<0) error(errno,0);
+
+						//Child process:
+						else if(pid==0){
+							//Execute the program, with args+2 being the pointer to the array of arguments.
+							if(execvp(args[1],args+1)<0) error(errno,0);
+						//Parent:
+						}else{
+							if((pid = waitpid(pid,&status,0))<0)error(errno,0);
+							else{
+								if(WIFSIGNALED(status)){	
+									s = WTERMSIG(status);
+									printf("myshell: process %d exited abnormally with signal %d: %s",pid,s,strsignal(s));
+								}else if(WIFEXITED(status)){
+									printf("myshell: process %d exited normally with return value 0",pid);
+								}
+							}
+						}
+					}
 					break;
+					//Right here, we're going to issue SIGKILL, SIGSTOP, and SIGCONT signals to the processes
 				case KILL:
+					if(numArgs != 2){
+						error(0,1);
+					}else{
+						pid = atoi(args[1]);	
+						if(kill(pid,SIGKILL)<0) error(errno,0);
+						else printf("myshell: process %d killed",pid);
+					}
+					break;
 				case STOP:
+					if(numArgs != 2){
+						error(0,1);
+					}else{
+						pid = atoi(args[1]);	
+						if(kill(pid,SIGSTOP)<0) error(errno,0);
+						else printf("myshell: process %d stopped",pid);
+					}
+					break;
 				case CONT:
-					//All of these only differ by a small amount, so there's one function: 
-					killStopCont(numArgs,s,status,command,pid,args,&numProcesses);
+					if(numArgs != 2){
+						error(0,1);
+					}else{
+						pid = atoi(args[1]);	
+						if(kill(pid,SIGCONT)<0) error(errno,0);
+						else printf("myshell: process %d continued",pid);
+					}
 					break;
 				case -1:
 					printf("myshell: command not recognized: %s",args[0]);
