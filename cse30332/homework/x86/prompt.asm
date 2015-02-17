@@ -76,12 +76,6 @@ getChar:
 	ret
 
 
-clearBuffer:
-	mov di, BUFLOC
-	mov cx, 64
-	rep mov di, 0
-	mov di, BUFLOC
-	ret
 
 
 echo:
@@ -101,10 +95,10 @@ echo:
 	mov al, 0Ah
 	int 10h
 
-	mov di, 0	
+	mov al, 0	
+	stosb
 	mov si, BUFLOC  ;Move the words at BUFLOC into si
 	call print
-	call clearBuffer
 	ret
 
 
