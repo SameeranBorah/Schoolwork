@@ -23,39 +23,88 @@ start:
 prompt:
 	mov si, promptString ;Print the first prompt: 
 	call print
-
 	mov di, BUFLOC       ;Set the di location to the buffer location
-.loop:		
-	mov ah, 0 
-	int 16h  	;Get keyboard input
-	stosb		;Store whatever is in AL in DI
+	jmp .loop
 
-	cmp al, 13 	;If there is a carriage return, go to newline
-	je .newline
-
+.endOfLoop:
 	mov ah, 0Eh     ;Otherwise, print the character to the user.
 	int 10h		
 	jmp .loop	;Loop back and let the user type again
-
 .newline:		
-			;Here, we will check if bufloc is equal to e, c, h, and o
 	mov ah, 0Eh     ;Set mode to teletype
 	mov al, 0Dh	;Print a carriage return and a newline:
 	int 10h
 	mov al, 0Ah
 	int 10h
-	call checkEcho
-
-	;mov si, promptString
-	;call print
+	mov si, promptString
+	call print
 	jmp .loop	;Go back to the loop
+.loop:		
+	call getChar	
+	cmp al, 13 	;If there is a carriage return, go to newline
+	je .newline
+	cmp al, 65h 	;e
+	jne .endOfLoop
+	mov ah, 0Eh     ;Otherwise, print the character to the user.
+	int 10h		
+
+	call getChar
+	cmp al, 63h
+	jne .endOfLoop
+	mov ah, 0Eh     ;Otherwise, print the character to the user.
+	int 10h		
+
+	call getChar
+	cmp al, 68h
+	jne .endOfLoop
+	mov ah, 0Eh     ;Otherwise, print the character to the user.
+	int 10h		
+
+	call getChar
+	cmp al, 6Fh
+	jne .endOfLoop
+	mov ah, 0Eh     ;Otherwise, print the character to the user.
+	int 10h		
+
+	call echo
+	jmp .newline
 
 
-checkEcho:
+getChar:
+	mov ah, 0 
+	int 16h  	;Get keyboard input
+	ret
+
+
+clearBuffer:
+	mov di, BUFLOC
+	mov cx, 64
+	rep mov di, 0
+	mov di, BUFLOC
+	ret
+
+
+echo:
+	mov di, BUFLOC
+.loop2:
+	call getChar	
+	stosb
+	cmp al, 13 	;If there is a carriage return, go to newline
+	je .done
+	mov ah, 0Eh     ;Otherwise, print the character to the user.
+	int 10h	
+	jmp .loop2
+.done:
+	mov ah, 0Eh     ;Set mode to teletype
+	mov al, 0Dh	;Print a carriage return and a newline:
+	int 10h
+	mov al, 0Ah
+	int 10h
+
 	mov di, 0	
 	mov si, BUFLOC  ;Move the words at BUFLOC into si
 	call print
-	mov di, BUFLOC
+	call clearBuffer
 	ret
 
 
