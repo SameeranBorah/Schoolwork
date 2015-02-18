@@ -1,5 +1,6 @@
 ;John Lake
-;x86 Daily 9
+;x86 Command Prompt
+;For this assignment, I chose a nice prompt to make things interesting.
 
 BITS 16
 %define BUFLOC 201h
@@ -15,17 +16,24 @@ start:
         mov sp, 1000h
         sti
 	;End of prelude
-	;cld
 
-	call prompt	
-	jmp $	; loop until the power goes out
+	call prompt		; Call prompt, the main function
+	jmp $			; loop until the power goes out
 
+
+
+;The actual function for the command prompt: 
 prompt:
-	mov si, promptString ;Print the first prompt: 
-	call print
-	mov di, BUFLOC       ;Set the di location to the buffer location
+	mov si, promptString 
+	call print		;print the first prompt
+	mov di, BUFLOC       	;Set the di location to the buffer location
 	jmp .loop
-
+.loop:		
+	call getChar	
+	cmp al, 13 	;If there is a carriage return, go to newline
+	je .newline
+	call checkEcho
+	
 .endOfLoop:
 	mov ah, 0Eh     ;Otherwise, print the character to the user.
 	int 10h		
@@ -36,72 +44,88 @@ prompt:
 	int 10h
 	mov al, 0Ah
 	int 10h
-	mov si, promptString
+
+	mov si, promptString ;Print the prompt
 	call print
-	jmp .loop	;Go back to the loop
-.loop:		
-	call getChar	
-	cmp al, 13 	;If there is a carriage return, go to newline
-	je .newline
-	cmp al, 65h 	;e
-	jne .endOfLoop
+	jmp .loop
+
+
+
+;Check and see if the echo command has been given
+checkEcho: 
+	cmp al, 65h 	;Check for "e"
+	jne prompt.endOfLoop
 	mov ah, 0Eh     ;Otherwise, print the character to the user.
 	int 10h		
 
-	call getChar
+	call getChar  	;Check for "c"
 	cmp al, 63h
-	jne .endOfLoop
+	jne prompt.endOfLoop
 	mov ah, 0Eh     ;Otherwise, print the character to the user.
 	int 10h		
 
-	call getChar
+	call getChar 	;Check for "h"
 	cmp al, 68h
-	jne .endOfLoop
+	jne prompt.endOfLoop
 	mov ah, 0Eh     ;Otherwise, print the character to the user.
 	int 10h		
 
-	call getChar
+	call getChar	;Check for "o"
 	cmp al, 6Fh
-	jne .endOfLoop
+	jne prompt.endOfLoop
 	mov ah, 0Eh     ;Otherwise, print the character to the user.
 	int 10h		
 
-	call echo
-	jmp .newline
-
-
-getChar:
-	mov ah, 0 
-	int 16h  	;Get keyboard input
-	ret
-
-
-
-
-echo:
-	mov di, BUFLOC
-.loop2:
-	call getChar	
-	stosb
-	cmp al, 13 	;If there is a carriage return, go to newline
-	je .done
+	call getChar	;Check for a space afterwords
+	cmp al, 20h
+	jne prompt.endOfLoop
 	mov ah, 0Eh     ;Otherwise, print the character to the user.
 	int 10h	
-	jmp .loop2
-.done:
+
+	call echo
+	jmp prompt.newline
+
+
+;Simple function to read characters typed into AL
+getChar:
+	mov ah, 0 	;set video mode
+	int 16h  	;Get keyboard input
+	ret		
+
+
+
+
+
+;Function for echo
+echo:
+	mov di, BUFLOC  ;Reset di to read everthing after "echo"
+.loopEcho:
+	call getChar	;continuously get characters and store them in di
+	stosb
+	cmp al, 13 	;If there is a carriage return, finish and print
+	je .print
+	
+	mov ah, 0Eh     ;Otherwise, print the character to the user and loop
+	int 10h	
+	jmp .loopEcho
+.print:
 	mov ah, 0Eh     ;Set mode to teletype
 	mov al, 0Dh	;Print a carriage return and a newline:
 	int 10h
 	mov al, 0Ah
 	int 10h
 
-	mov al, 0	
-	stosb
+	mov al, 0	;Append a null byte to the end of di
+	stosb		
 	mov si, BUFLOC  ;Move the words at BUFLOC into si
 	call print
+	jmp .done
+
+.done:
 	ret
 
 
+;Print function to print words stored in si
 print:
 	mov ah, 0Eh 	;Set up teletype mode
 .loop:			;Loop so that you can print each char
@@ -114,8 +138,8 @@ print:
 	ret
 
 	
-
-promptString db '--$ '
+;Prompt string
+promptString db '[you@mini-os-]$ '
 
 
 times 510-($-$$) db 0	; fill remainder of sector with zeros
