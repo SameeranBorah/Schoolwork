@@ -1,0 +1,27 @@
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+
+int main(){
+
+	int i; 
+	pid_t pid;
+	char * args = malloc(20);
+	char * fileArgs = malloc(20);
+	for(i = 0;i<50;i++){
+		memset(args,0,20);
+		pid = fork();
+		if(pid == 0){
+			//Execute mandel with the particular operations needed: 
+			sprintf(fileArg,"-o ");
+			sprintf(fileArg,"mandel%d.bmp",i);
+			execvp("",);
+		}else{
+
+		}
+	}
+	free args;
+	free fileArgs;
+	return 0;
+}
