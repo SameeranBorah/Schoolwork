@@ -22,8 +22,7 @@ class _movie_database:
 		self.movies = {}
 		movieFile = open(movie_file)
 		for line in movieFile:
-			
-			movieInfo = line.rstrip('\n').split("::")
+			movieInfo = line.split("::")
 			self.movies[movieInfo[0]] = []
 			self.movies[movieInfo[0]] = movieInfo
 			self.ratings[movieInfo[0]] = {}
@@ -31,10 +30,10 @@ class _movie_database:
 
 	#Gets the movie at movie id (mid) from the movie dictionary
 	def get_movie(self,mid):
+		print mid
 		if str(mid) in self.movies.keys():
 			mo = []
 			mo = self.movies[str(mid)]
-			print mo
 			return mo[1:]
 		else:
 			return None
@@ -46,11 +45,7 @@ class _movie_database:
 
 	#Set a movie to have specific information: 
 	def set_movie(self,mid,info):
-		input = []
-		input.append(mid)
-		input.append(info[0])
-		input.append(info[1])
-		self.movies[str(mid)] = input
+		self.movies[str(mid)] = info
 
 	#Remove a movie from the dictionary:
 	def delete_movie(self,mid):
@@ -62,18 +57,15 @@ class _movie_database:
 		self.users = {}
 		uFile = open(users_file)
 		for line in uFile:
-			userInfo = line.rstrip('\n').split("::")
-			userInfo[2] = int(userInfo[2])
-			userInfo[3] = int(userInfo[3])
-			
+			userInfo = line.split("::")
 			self.users[userInfo[0]] = []
 			self.users[userInfo[0]] = userInfo
 
 	#Get a particular user from their ID: 
 	def get_user(self,uid):
-		if str(uid) in self.users.keys():
+		if uid in self.users.keys():
 			u = []
-			u = self.users[str(uid)]
+			u = self.users[uid]
 			return u[1:]
 		else:
 			return None
@@ -84,13 +76,7 @@ class _movie_database:
 
 	#Set a user to have specific information:
 	def set_user(self,uid, info):
-		input = []
-		input.append(uid)
-		input.append(info[0])
-		input.append(info[1])
-		input.append(info[2])
-		input.append(info[3])
-		self.users[str(uid)] = input
+		self.users[str(uid)] = info
 
 
 	#Delete a particular user: 
@@ -113,28 +99,25 @@ class _movie_database:
 
 	#Get the average rating for a particular movie:
 	def get_rating(self,mid):
+
 		#If the movie exists: 
-		if str(mid) in self.ratings.keys():
+		if mid in self.ratings.keys():
 			avgRating = 0
-			num = 0
+			num = 1
 
 			#If the ratings entry is empty, then there aren't any ratings. 
-			if self.ratings[str(mid)].keys() == {}:
+			if self.ratings[mid].keys() == {}:
 				print "No ratings for this movie."
 
 			#Otherwise, calculate the average ranking: 
 			else:
 
 				#For each user that has rated this movie, add their rating and average all of them
-				for user in self.ratings[str(mid)].keys():
-					avgRating = avgRating + int(self.ratings[str(mid)][user])
+				for user in self.ratings[mid].keys():
+					avgRating = avgRating + int(self.ratings[mid][user])
 					num += 1
-
-				if num == 0:
-					return avgRating
-				else: 
-					avgRating/=(num*1.0)
-					return avgRating
+				avgRating/=(num*1.0)
+				return avgRating
 		else:
 			return None
 
@@ -145,25 +128,26 @@ class _movie_database:
 			r = self.get_rating(mov)
 			self.avg_ratings[mov] = r
 		highestNum = 0
-		lowestMid = 0
+		lowestMid = 1000000
 		for mid in self.avg_ratings.keys():
 
-			if float(self.avg_ratings[str(mid)]) > highestNum: 
-				highestNum = float(self.avg_ratings[str(mid)])
-				lowestMid = int(mid)
-			elif float(self.avg_ratings[str(mid)]) == highestNum: 
-				if int(mid) < lowestMid:
-					lowestMid = int(mid)
+			if self.avg_ratings[mid] > highestNum: 
+				highestNum = self.avg_ratings[mid]
+				lowestMid = mid
+			elif self.avg_ratings[mid] == highestNum: 
+				if mid < lowestMid:
+					lowestMid = mid
 	
 		return lowestMid	
 			
 	def set_user_movie_rating(self,uid,mid,rating):
-		if str(mid) in self.ratings.keys():
-			 self.ratings[str(mid)][str(uid)] = int(rating)
+		if mid in self.ratings.keys():
+			if uid in self.ratings[mid].keys():
+				 self.ratings[mid][uid] = rating
 	def get_user_movie_rating(self,uid,mid):
-		if str(mid) in self.ratings.keys():
-			if str(uid) in self.ratings[str(mid)].keys():
-				return int(self.ratings[str(mid)][str(uid)])
+		if mid in self.ratings.keys():
+			if uid in self.ratings[mid].keys():
+				return self.ratings[mid][uid]
 	def delete_all_ratings(self):
 		self.ratings = {}
 
