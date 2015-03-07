@@ -17,6 +17,8 @@ class MoviesQT(QMainWindow):
 		self.setCentralWidget(self.central)
 		self.SITE_URL = 'http://student00.cse.nd.edu:40001'
 		self.RECOMMENDATIONS_URL = self.SITE_URL + '/recommendations/'
+		self.MOVIES_URL = self.SITE_URL + '/movies/'
+		self.IMG_URL = '/afs/nd.edu/user37/cmc/Public/cse332_sp15/cherrypy/data/images/'
 
 		#Set up exit action: 
 		exitAction = QAction("Quit",self)
@@ -38,6 +40,23 @@ class MoviesQT(QMainWindow):
 		self.user_menu.addAction(setUserAction)
 
 		
+		#Display the first movie: 
+		r = requests.get(self.RECOMMENDATIONS_URL + str(self.central.uid))
+		resp = json.loads(r.content)
+		mid = resp['movie_id']
+		r = requests.get(self.MOVIES_URL + str(mid))
+		resp = json.loads(r.content)
+		print resp
+		imgPath = resp['img']
+		movieName = resp['title']
+		genre = resp['genres']
+		pic = QPixmap(self.IMG_URL + imgPath)
+		self.central.moviePic.setPixmap(pic)
+		self.central.movieTitle.setText(movieName)
+		self.central.type.setText(genre)
+	
+
+		
 	def exit(self):
 		sys.exit(app.exec_())
 
@@ -53,19 +72,32 @@ class MoviesQT(QMainWindow):
 	
 		if ok:	
 			self.central.uid = int(text)
-			self.central.movieTitle.setText(text)
 		
 
 class MoviesCentral(QWidget):
 	def __init__(self,parent=None):
 		super(MoviesCentral,self).__init__(parent)
+
+		#Set up everything
 		self.uid = 5
-		self.show()
-		self.movieTitle = QLabel("%s" % self.uid)
+		
+		self.movieTitle = QLabel("MOVIETITLE")
+		self.upButton = QPushButton("UP")
+		self.downButton = QPushButton("DOWN")
+		self.moviePic = QLabel(self)
+		self.type = QLabel(self)
+		self.rating = QLabel(self)
+		
 
 		layout = QGridLayout()
-		layout.addWidget(self.movieTitle,3,0)
+		layout.addWidget(self.movieTitle,0,1)
+		layout.addWidget(self.upButton,1,0)
+		layout.addWidget(self.moviePic,1,1)
+		layout.addWidget(self.downButton, 1,2)
+		layout.addWidget(self.type,2,1)
+		layout.addWidget(self.rating,3,1)
 		self.setLayout(layout)
+
 
 #Main function: 
 if __name__ == "__main__":
