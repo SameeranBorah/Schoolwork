@@ -19,6 +19,8 @@ class MoviesQT(QMainWindow):
 		self.RECOMMENDATIONS_URL = self.SITE_URL + '/recommendations/'
 		self.MOVIES_URL = self.SITE_URL + '/movies/'
 		self.IMG_URL = '/afs/nd.edu/user37/cmc/Public/cse332_sp15/cherrypy/data/images/'
+		self.USERS_URL = self.SITE_URL + '/users/'
+		self.RATINGS_URL = self.SITE_URL + '/ratings/'
 
 		#Set up exit action: 
 		exitAction = QAction("Quit",self)
@@ -38,15 +40,18 @@ class MoviesQT(QMainWindow):
 		self.user_menu = self.menuBar().addMenu("User")
 		self.user_menu.addAction(viewProfAction)
 		self.user_menu.addAction(setUserAction)
+		self.get_movie()
 
 		
-		#Display the first movie: 
-		r = requests.get(self.RECOMMENDATIONS_URL + str(self.central.uid))
+	#Get all the information to show the first recommendation:  
+	def get_movie(self):
+		print str(self.central.uid)
+		r = requests.get(self.RECOMMENDATIONS_URL + '3')#str(self.central.uid))
 		resp = json.loads(r.content)
+		print resp
 		mid = resp['movie_id']
 		r = requests.get(self.MOVIES_URL + str(mid))
 		resp = json.loads(r.content)
-		print resp
 		imgPath = resp['img']
 		movieName = resp['title']
 		genre = resp['genres']
@@ -54,24 +59,38 @@ class MoviesQT(QMainWindow):
 		self.central.moviePic.setPixmap(pic)
 		self.central.movieTitle.setText(movieName)
 		self.central.type.setText(genre)
+		
+		#Get the rating for the film:
+		r = requests.get(self.RATINGS_URL + str(mid))
+		resp = json.loads(r.content)
+		self.central.rating.setText(str(resp['rating']))
+	
 	
 
 		
+
+	#Exit the program (Called by File: Quit)
 	def exit(self):
 		sys.exit(app.exec_())
 
+
+	#Simply gets the information for the GET call to /users/:user_id
 	def view_profile(self):
 		msgbox = QMessageBox()
-		msgbox.setText("")
-		msgbox.exec_()  # COME BACK THIS LINE IN A SECOND
+		r = requests.get(self.SITE_URL + '/users/' + str(self.central.uid))
+		resp = json.loads(r.content)
+		msgbox.setText("Profile\n Gender: %s\n Age: %s\nZIP: %s" % (resp['gender'],resp['age'],resp['zipcode']))
+		msgbox.exec_() 
 
+
+	#A simple input dialog to prompt the user for the user ID
 	def set_user(self):
 		input = QInputDialog()
-		
 		text,ok = input.getText(self, 'Set User','Enter the User ID:')
-	
 		if ok:	
 			self.central.uid = int(text)
+			self.central.user.setText(str(self.central.uid))
+		self.get_movie()
 		
 
 class MoviesCentral(QWidget):
@@ -79,7 +98,7 @@ class MoviesCentral(QWidget):
 		super(MoviesCentral,self).__init__(parent)
 
 		#Set up everything
-		self.uid = 5
+		self.uid = 10
 		
 		self.movieTitle = QLabel("MOVIETITLE")
 		self.upButton = QPushButton("UP")
@@ -87,6 +106,8 @@ class MoviesCentral(QWidget):
 		self.moviePic = QLabel(self)
 		self.type = QLabel(self)
 		self.rating = QLabel(self)
+		#For debugging: 
+		self.user = QLabel(str(self.uid))
 		
 
 		layout = QGridLayout()
@@ -96,6 +117,7 @@ class MoviesCentral(QWidget):
 		layout.addWidget(self.downButton, 1,2)
 		layout.addWidget(self.type,2,1)
 		layout.addWidget(self.rating,3,1)
+		layout.addWidget(self.user,4,1)
 		self.setLayout(layout)
 
 
