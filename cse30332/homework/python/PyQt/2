@@ -1,11 +1,16 @@
 #John F. Lake, Jr. 
 #My PyQt movies program
+
+
+
+#Import everything necessary:
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os
 import sys
 import requests
 import json
+
 
 #Main class that holds everything else.
 class MoviesQT(QMainWindow):
@@ -14,7 +19,7 @@ class MoviesQT(QMainWindow):
 	def __init__(self):
 		super(MoviesQT,self).__init__()
 		self.setWindowTitle("Movie Recommender")
-		self.resize(600,600)
+		self.resize(500,500)
 		self.central = MoviesCentral(parent = self)
 		self.setCentralWidget(self.central)
 		self.SITE_URL = 'http://student00.cse.nd.edu:40001'
@@ -33,6 +38,7 @@ class MoviesQT(QMainWindow):
 		self.connect(viewProfAction, SIGNAL("triggered()"),self.view_profile)
 		setUserAction = QAction("Set User",self)
 		self.connect(setUserAction, SIGNAL("triggered()"),self.set_user)
+		
 
 		#Set up menu bar: 
 		self.file_menu = self.menuBar().addMenu("File")
@@ -40,10 +46,18 @@ class MoviesQT(QMainWindow):
 		self.user_menu = self.menuBar().addMenu("User")
 		self.user_menu.addAction(viewProfAction)
 		self.user_menu.addAction(setUserAction)
+		
+
+		
+		
+	
+
+		
 
 	#Exit the program (Called by File: Quit)
 	def exit(self):
 		sys.exit(app.exec_())
+
 
 	#Simply gets the information for the GET call to /users/:user_id
 	def view_profile(self):
@@ -53,21 +67,16 @@ class MoviesQT(QMainWindow):
 		msgbox.setText("Profile\n Gender: %s\n Age: %s\nZIP: %s" % (resp['gender'],resp['age'],resp['zipcode']))
 		msgbox.exec_() 
 
+
 	#A simple input dialog to prompt the user for the user ID
 	def set_user(self):
 		input = QInputDialog()
 		text,ok = input.getText(self, 'Set User','Enter the User ID:')
 		if ok:	
 			self.central.uid = int(text)
-		self.central.get_movie()
-		self.central.goodMovies.setParent(None)
-		self.central.badMovies.setParent(None)
-		self.central.goodMovies = 0
-		self.central.goodMovies = QListWidget()
-		self.central.badMovies = 0
-		self.central.badMovies = QListWidget()
-		self.central.layout.addWidget(self.central.goodMovies,5,0)
-		self.central.layout.addWidget(self.central.badMovies,5,2)
+			self.central.user.setText(str(self.central.uid))
+		self.get_movie()
+	
 			
 
 class MoviesCentral(QWidget):
@@ -88,43 +97,37 @@ class MoviesCentral(QWidget):
 		self.downButton = QPushButton("DOWN")
 		self.upButton.clicked.connect(self.up_pressed)
 		self.downButton.clicked.connect(self.down_pressed)
-		self.goodLabel = QLabel("Good Movies:")
-		self.badLabel = QLabel("Bad Movies:")
-		self.badMovies = QListWidget()
-		self.goodMovies = QListWidget()
-
 		self.moviePic = QLabel(self)
 		self.type = QLabel(self)
 		self.rating = QLabel(self)
+		#For debugging: 
+		self.user = QLabel(str(self.uid))
+		
 
-		self.layout = QGridLayout()
-		self.layout.addWidget(self.movieTitle,0,1)
-		self.layout.addWidget(self.upButton,1,0)
-		self.layout.addWidget(self.moviePic,1,1)
-		self.layout.addWidget(self.downButton, 1,2)
-		self.layout.addWidget(self.type,2,1)
-		self.layout.addWidget(self.rating,3,1)
-		self.layout.addWidget(self.badLabel,4,2)
-		self.layout.addWidget(self.goodLabel,4,0)
-		self.layout.addWidget(self.badMovies,5,2)
-		self.layout.addWidget(self.goodMovies,5,0)
-		self.setLayout(self.layout)
+		layout = QGridLayout()
+		layout.addWidget(self.movieTitle,0,1)
+		layout.addWidget(self.upButton,1,0)
+		layout.addWidget(self.moviePic,1,1)
+		layout.addWidget(self.downButton, 1,2)
+		layout.addWidget(self.type,2,1)
+		layout.addWidget(self.rating,3,1)
+		layout.addWidget(self.user,4,1)
+		self.setLayout(layout)
 		self.get_movie()
+
+
+		
 
 	#Down and up buttons to send put requests to the recommendations resource
 	def down_pressed(self):
 		input = {'movie_id':str(self.mid), 'rating': str(1), 'apikey':"AaD72Feb3"}
 		r = requests.put(self.RECOMMENDATIONS_URL + str(self.uid),data=json.dumps(input))
 		resp = json.loads(r.content)
-		title = self.movieTitle.text()
-		self.badMovies.addItem(str(title))
 		self.get_movie()
 	def up_pressed(self):
 		input = {'movie_id':str(self.mid), 'rating': str(5), 'apikey':"AaD72Feb3"}
 		r = requests.put(self.RECOMMENDATIONS_URL + str(self.uid),data=json.dumps(input))
-		title = self.movieTitle.text()
 		resp = json.loads(r.content)
-		self.goodMovies.addItem(str(title))
 		self.get_movie()
 
 	#Get all the information to show for the current movie recommended
@@ -135,7 +138,7 @@ class MoviesCentral(QWidget):
 		resp = json.loads(r.content)
 		self.mid = resp['movie_id']
 
-		#Get all the info (picture, title, etc) for that movie
+		#Get all the info (picture, title, etc) for that movie:
 		r = requests.get(self.MOVIES_URL + str(self.mid))
 		resp = json.loads(r.content)
 		pic = QPixmap(self.IMG_URL + resp['img'])
