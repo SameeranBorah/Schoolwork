@@ -1,4 +1,5 @@
 #John F. Lake, Jr. 
+#CSE30332
 #My PyQt movies program
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -17,12 +18,8 @@ class MoviesQT(QMainWindow):
 		self.resize(600,600)
 		self.central = MoviesCentral(parent = self)
 		self.setCentralWidget(self.central)
-		self.SITE_URL = 'http://student00.cse.nd.edu:40001'
-		self.RECOMMENDATIONS_URL = self.SITE_URL + '/recommendations/'
-		self.MOVIES_URL = self.SITE_URL + '/movies/'
-		self.IMG_URL = '/afs/nd.edu/user37/cmc/Public/cse332_sp15/cherrypy/data/images/'
+		self.SITE_URL = 'http://student01.cse.nd.edu:40001'
 		self.USERS_URL = self.SITE_URL + '/users/'
-		self.RATINGS_URL = self.SITE_URL + '/ratings/'
 
 		#Set up exit action: 
 		exitAction = QAction("Quit",self)
@@ -48,7 +45,7 @@ class MoviesQT(QMainWindow):
 	#Simply gets the information for the GET call to /users/:user_id
 	def view_profile(self):
 		msgbox = QMessageBox()
-		r = requests.get(self.SITE_URL + '/users/' + str(self.central.uid))
+		r = requests.get(self.USERS_URL + str(self.central.uid))
 		resp = json.loads(r.content)
 		msgbox.setText("Profile\n Gender: %s\n Age: %s\nZIP: %s" % (resp['gender'],resp['age'],resp['zipcode']))
 		msgbox.exec_() 
@@ -60,6 +57,8 @@ class MoviesQT(QMainWindow):
 		if ok:	
 			self.central.uid = int(text)
 		self.central.get_movie()
+
+		#Reset the movie lists:
 		self.central.goodMovies.setParent(None)
 		self.central.badMovies.setParent(None)
 		self.central.goodMovies = 0
@@ -76,13 +75,13 @@ class MoviesCentral(QWidget):
 
 		#Set up everything
 		self.uid = 1
-		self.SITE_URL = 'http://student00.cse.nd.edu:40001'
+		self.SITE_URL = 'http://student01.cse.nd.edu:40001'
 		self.RECOMMENDATIONS_URL = self.SITE_URL + '/recommendations/'
 		self.MOVIES_URL = self.SITE_URL + '/movies/'
 		self.IMG_URL = '/afs/nd.edu/user37/cmc/Public/cse332_sp15/cherrypy/data/images/'
-		self.USERS_URL = self.SITE_URL + '/users/'
 		self.RATINGS_URL = self.SITE_URL + '/ratings/'
 
+		#Construct the GUI Elements
 		self.movieTitle = QLabel("MOVIETITLE")
 		self.upButton = QPushButton("UP")
 		self.downButton = QPushButton("DOWN")
@@ -92,11 +91,12 @@ class MoviesCentral(QWidget):
 		self.badLabel = QLabel("Bad Movies:")
 		self.badMovies = QListWidget()
 		self.goodMovies = QListWidget()
-
 		self.moviePic = QLabel(self)
 		self.type = QLabel(self)
 		self.rating = QLabel(self)
 
+
+		#Put all of the elements in a grid layout
 		self.layout = QGridLayout()
 		self.layout.addWidget(self.movieTitle,0,1)
 		self.layout.addWidget(self.upButton,1,0)
