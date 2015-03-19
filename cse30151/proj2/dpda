@@ -1,0 +1,2 @@
+#!/bin/bash
+python dpda.py $1
