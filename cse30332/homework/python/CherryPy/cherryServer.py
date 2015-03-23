@@ -4,7 +4,7 @@
 
 
 #Import the resources
-import Movies
+import Movies,Users
 import cherrypy
 import re,json
 def start_service():
@@ -12,9 +12,11 @@ def start_service():
 
 	#Make controller and dispatcher objects for all resources
 	mov = Movies.Movies()
+	usr = Users.Users()
 	dispatcher = cherrypy.dispatch.RoutesDispatcher()
 
 
+	#MOVIES
 	#GET:
 	dispatcher.connect('mov_get', '/movies/:id',controller=mov,
 				action = 'GET',conditions=dict(method=['GET']))
@@ -34,6 +36,27 @@ def start_service():
 	dispatcher.connect('mov_del','/movies/:id',controller=mov, 
 				action = 'DELETE',conditions=dict(method=['DELETE']))
 	dispatcher.connect('mov_del_all','/movies/',controller=mov, 
+				action = 'DELETE_ALL',conditions=dict(method=['DELETE']))
+
+
+	#USERS:
+	
+	#GET
+	dispatcher.connect('usr_get', '/users/:id',controller=usr,
+				action = 'GET',conditions=dict(method=['GET']))
+	dispatcher.connect('usr_get_all','/users/',controller=usr, 
+				action = 'GET_ALL',conditions=dict(method=['GET']))
+	#PUT
+	dispatcher.connect('usr_put','/users/:id',controller=usr, 
+				action = 'PUT',conditions=dict(method=['PUT']))
+	#POST
+	dispatcher.connect('usr_post','/users/',controller=usr, 
+				action = 'POST',conditions=dict(method=['POST']))
+
+	#DELETE
+	dispatcher.connect('usr_del','/users/:id',controller=usr, 
+				action = 'DELETE',conditions=dict(method=['DELETE']))
+	dispatcher.connect('usr_del_all','/users/',controller=usr, 
 				action = 'DELETE_ALL',conditions=dict(method=['DELETE']))
 
 	#Configuration

@@ -9,10 +9,25 @@ class _movie_database:
 	def __init__(self):
 		#Set movies, users, ratings, and avg_ratings to by empty dictionaries
 		self.movies = {}
+		self.posters = {}
 		self.users = {}
 		self.ratings = {}
 		self.avg_ratings = {}
 
+	def load_posters(self,posters_file):
+		f = open(posters_file)
+		for line in f:
+			line = line.rstrip()
+			components = line.split("::")
+			mid = components[0]
+			mimg = components[2]
+			self.posters[mid] = mimg
+		f.close()
+
+	def get_poster_by_id(self,id):
+		if id in self.posters.keys():
+			return self.posters[id]
+		return '/default.jpg'
 
 
 

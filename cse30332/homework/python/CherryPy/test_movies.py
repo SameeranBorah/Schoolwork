@@ -64,6 +64,8 @@ class TestMovies(unittest.TestCase):
 		m = {}
 		m['apikey'] = 'AAAAAAAB'
 		r = requests.delete(self.MOVIES_URL + str(movie_id), data = json.dumps(m))
+		print r;
+		print r.content;
 		self.assertTrue(self.is_json(r.content))
 		resp = json.loads(r.content)
 		self.assertEquals(resp['result'], 'success')
