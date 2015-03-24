@@ -1,0 +1,3 @@
+#!/bin/bash
+ffmpeg -i ./mandel%2d.bmp ./mandel.mpg
+ffplay mandel.mpg

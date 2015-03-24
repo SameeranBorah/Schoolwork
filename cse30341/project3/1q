@@ -28,11 +28,11 @@ int main(int argc, char ** argv){
 	char * yArg;
 	char * mArg;
 
-	if((fileArg = malloc(20))==NULL) printf("Error: %s\n",strerror(errno));
-	if((sizeArg = malloc(20))==NULL) printf("Error: %s\n",strerror(errno));
-	if((xArg = malloc(20))==NULL) printf("Error: %s\n",strerror(errno));
-	if((yArg = malloc(20))==NULL) printf("Error: %s\n",strerror(errno));
-	if((mArg = malloc(20))==NULL) printf("Error: %s\n",strerror(errno));
+	if((fileArg = malloc(20))==nullptr) printf("Error: %s\n",strerror(errno));
+	if((sizeArg = malloc(20))==nullptr) printf("Error: %s\n",strerror(errno));
+	if((xArg = malloc(20))==nullptr) printf("Error: %s\n",strerror(errno));
+	if((yArg = malloc(20))==nullptr) printf("Error: %s\n",strerror(errno));
+	if((mArg = malloc(20))==nullptr) printf("Error: %s\n",strerror(errno));
 	pid_t pid;
 	for(i = 1;i<51;i++){
 
