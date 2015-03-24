@@ -29,6 +29,19 @@ class _movie_database:
 			return self.posters[id]
 		return '/default.jpg'
 
+	def load_movie(self,id,movie_file):
+		movieFile = open(movie_file)
+		for line in movieFile:
+			#Remove the newline character: 
+			movieInfo = line.rstrip('\n').split("::")
+
+			if id == movieInfo[0]:
+				#Set the movie info for that particular movie id (which is movieInfo[0])
+				self.movies[movieInfo[0]] = []
+				self.movies[movieInfo[0]] = movieInfo
+
+				#Set the ratings for that particular movie to be an empty dictionary
+				self.ratings[movieInfo[0]] = {}
 
 
 	# Loads in a movies file
@@ -58,7 +71,18 @@ class _movie_database:
 			return mo[1:]
 		else:
 			return None
-		
+	def add_movie(self,info):
+		movVals = self.movies.values()
+		ids = []
+		for m in movVals:
+			ids.append(int(m[0]))
+		movieID = int(max(ids))+1
+		input = []
+		input.append(movieID)
+		input.append(info[0])
+		input.append(info[1])
+		self.movies[str(movieID)] = input
+		return movieID
 
 	#Simply returns all of the movie IDs:
 	def get_movies(self):
@@ -66,6 +90,7 @@ class _movie_database:
 
 	#Set a movie to have specific information: 
 	def set_movie(self,movieID,info):
+		
 		input = []
 		input.append(movieID)
 		input.append(info[0])

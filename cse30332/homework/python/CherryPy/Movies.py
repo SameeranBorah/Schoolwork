@@ -34,32 +34,39 @@ class Movies(object):
 	def PUT(self,id=None):
 		output = {'result':'success'}
 		v = json.loads(cherrypy.request.body.read())
-		info = []
-		info.append(v['title'])
-		info.append(v['genres'])
-		self.myDB.set_movie(id,info)
+		if v['apikey'] == self.API_KEY:
+			info = []
+			info.append(v['title'])
+			info.append(v['genres'])
+			self.myDB.set_movie(id,info)
+		else:
+			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
 	def GET_ALL(self):
 		output = {'result':'success'}
 		output['movies'] = []
 		for key in self.myDB.get_movies():
 			mov = self.myDB.get_movie(key)
-			info = {}
-			info['id'] = key
-			info['genres'] = mov[1]
-			info['title'] = mov[0]
-			info['img'] = self.myDB.get_poster_by_id(key)
 			if mov is not None:
+				info = {}
+				info['id'] = int(key)
+				info['genres'] = mov[1]
+				info['title'] = mov[0]
+				info['img'] = self.myDB.get_poster_by_id(key)
 				output['movies'].append(info)
 		return json.dumps(output,encoding = 'latin-1')
 
 	def POST(self):
 		output = {'result':'success'}
 		v = json.loads(cherrypy.request.body.read())
-		info = []
-		info.append(v['title'])
-		info.append(v['genres'])
-		self.myDB.set_movie(id,info)
+		if v['apikey'] == self.API_KEY:
+			info = []
+			info.append(v['title'])
+			info.append(v['genres'])
+			id = self.myDB.add_movie(info)
+			output['id'] = id
+		else:
+			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
 
 
@@ -67,8 +74,6 @@ class Movies(object):
 		
 		v = json.loads(cherrypy.request.body.fp.read())
 		output = {'result':'success'}
-		print v['apikey']
-		print self.API_KEY
 		if v['apikey'] == self.API_KEY:
 			self.myDB.delete_movie(id)
 		else:
@@ -80,9 +85,7 @@ class Movies(object):
 
 		v = json.loads(cherrypy.request.body.fp.read())
 		keys = self.myDB.get_movies()
-		print v['apikey']
-		print self.API_KEY
-		if str(v['apikey']) is self.API_KEY:
+		if v['apikey'] == self.API_KEY:
 			for key in keys:
 				self.myDB.delete_movie(key)
 		else:
@@ -91,14 +94,23 @@ class Movies(object):
 		return json.dumps(output,encoding = 'latin-1')
 
 	def RESET(self,id):
+		v = json.loads(cherrypy.request.body.fp.read())
 		output = {'result':'success'}
+		if v['apikey'] == self.API_KEY:
+			self.myDB.load_movie(id,'ml-1m/movies.dat')
+		else:
+			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
 	def RESET_ALL(self):
+		v = json.loads(cherrypy.request.body.fp.read())
 		output = {'result':'success'}
-		self.myDB.__init__()
-		self.myDB.load_posters('images.dat')
-		self.myDB.load_movies('ml-1m/movies.dat')
-		self.myDB.load_users('ml-1m/users.dat')
-		self.myDB.load_ratings('ml-1m/ratings.dat')
+		if v['apikey'] == self.API_KEY:
+			self.myDB.__init__()
+			self.myDB.load_posters('images.dat')
+			self.myDB.load_movies('ml-1m/movies.dat')
+			self.myDB.load_users('ml-1m/users.dat')
+			self.myDB.load_ratings('ml-1m/ratings.dat')
+		else:
+			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
 		

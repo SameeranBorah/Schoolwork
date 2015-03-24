@@ -9,7 +9,7 @@ class TestMoviesIndex(unittest.TestCase):
 	#	self.SITE_URL = 'http://student02.cse.nd.edu:40001'
 	#	self.MOVIES_URL = self.SITE_URL + '/movies/'
 	#	self.RESET_URL = self.SITE_URL + '/reset/'
-	SITE_URL = 'http://student03.cse.nd.edu:40001'
+	SITE_URL = 'http://student03.cse.nd.edu:40041'
 	MOVIES_URL = SITE_URL + '/movies/'
 	RESET_URL = SITE_URL + '/reset/'
 
