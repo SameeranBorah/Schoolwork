@@ -1,9 +1,9 @@
 #!/bin/bash
 
+python test_ratings.py
 python test_movies_index.py
 python test_movies.py
 python test_recommendations_index.py
 python test_recommendations.py
-python test_ratings.py
 python test_users_index.py
 python test_users.py

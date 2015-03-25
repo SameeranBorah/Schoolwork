@@ -6,9 +6,9 @@ import json
 class Movies(object):
 
 	@cherrypy.tools.json_in()
-	def __init__(self):
+	def __init__(self,DB):
 		self.API_KEY = 'AAAAAAAB'
-		self.myDB = _movie_database()
+		self.myDB = DB
 		self.myDB.delete_all_ratings()
                 self.myDB.load_movies('ml-1m/movies.dat')
                 self.myDB.load_users('ml-1m/users.dat')
@@ -106,10 +106,10 @@ class Movies(object):
 		output = {'result':'success'}
 		if v['apikey'] == self.API_KEY:
 			self.myDB.__init__()
-			self.myDB.load_posters('images.dat')
 			self.myDB.load_movies('ml-1m/movies.dat')
 			self.myDB.load_users('ml-1m/users.dat')
 			self.myDB.load_ratings('ml-1m/ratings.dat')
+			self.myDB.load_posters('images.dat')
 		else:
 			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
