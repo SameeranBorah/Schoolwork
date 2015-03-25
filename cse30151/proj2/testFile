@@ -1,7 +1,8 @@
-Q:q1,q2,q3
+Q:q0,q1,q2,q3
 A:0,1
-Z:a,b
+Z:a,b,$
+T:q0,e,e,q1,$
 T:q1,0,e,q2,a
 T:q2,1,e,q3,e
-S:q1
+S:q0
 F:q3

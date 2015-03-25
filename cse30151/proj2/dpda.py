@@ -76,6 +76,8 @@ def getDPDA(filename):
 			s = re.split(',|\n', line[2:-1])
 			if len(s) == 1 and s[0] == "":
 				return -1
+
+			print "Starting state: " + str(s)
 			n['start'] = s
 
 
@@ -85,6 +87,7 @@ def getDPDA(filename):
 			f = re.split(',|\n', line[2:-1])
 			if len(f) == 1 and f[0] == "":
 				return -1
+			print "Accepting states: " + str(f)
 
 			n['acceptStates'] = f
 		else:
@@ -96,6 +99,112 @@ def getDPDA(filename):
 
 def processInput(dpda):
 	print "This will process the input for the given DPDA"
+
+ 	numInputTapes = int(raw_input(""))
+
+	#Get each input tape and delimit it. 
+	for i in range(numInputTapes):
+
+		#Get the input: 
+		it = raw_input("")
+		inputTape = re.split(',',it)
+		stack = []
+
+		#Used to make sure the input is valid: 
+		validInput=1;
+
+		#Set the css to whatever the start state is: 
+		cs = dpda['start'][0]
+
+
+
+		if len(inputTape) == 1 and inputTape[0] == "":
+			acc = 0;
+			if cs in dpda['acceptStates']:
+					acc=1;
+			if acc == 1:
+				print "ACCEPT!\n"
+			else:
+				print "REJECT!\n"
+			continue
+				
+		for key in dpda['transitions']:
+			trans = dpda['transitions'][key]
+
+			#The transition is applicable to the state we are in: 
+			if trans[0] == cs:
+				if trans[1] == 'e' and trans[2] == 'e':
+					print cs+"; "+trans[1]+"; "+trans[2]+"; "+trans[3]+"; "+",".join(stack)+trans[4]
+					cs = trans[3]
+					if trans[4] is not 'e':
+						stack.append(trans[4])
+			
+
+		for input in inputTape:
+
+			if input in dpda['alphabet']:
+				for key in dpda['transitions']:
+
+					trans = dpda['transitions'][key]
+
+					#The transition is applicable to the state we are in: 
+					if trans[0] == cs:
+
+						#Automatic transition (always check first.)
+						if trans[1] == 'e' and trans[2] == 'e':
+							cs = trans[3]
+							if trans[4] is not 'e':
+								stack.append(trans[4])
+								print cs+"; "+trans[1]+"; "+trans[2]+"; "+trans[3]+"; "+",".join(stack)
+								print "PUSHING " + str(trans[4]) + " ON THE STACK"
+	
+
+						#Doesn't matter what's on the stack: 
+						elif trans[2] == 'e':
+							if trans[1] == input:
+								cs = trans[3]
+								
+								if trans[4] is not 'e':
+									stack.append(trans[4])
+								print cs+"; "+trans[1]+"; "+trans[2]+"; "+trans[3]+"; "+",".join(stack)
+								print "PUSHING " + str(trans[4]) + " ON THE STACK"
+		
+						#Doesn't matter what the input is
+						elif trans[1] == 'e':
+							stackTop = stack.pop()
+							if trans[2] == stackTop:
+								cs = trans[3]
+								if trans[4] is not 'e':
+									stack.append(trans[4])
+								print csr+"; "+trans[1]+"; "+trans[2]+"; "+trans[3]+"; "+",".join(stack)
+								print "PUSHING " + str(trans[4]) + " ON THE STACK"
+								
+								
+			
+								
+							else:
+								stack.append(stackTop)
+			else: 
+				print "REJECT: This isn't recognized by the alphabet of this DPDA!"
+				
+
+
+
+			
+		#Either accept or reject the given input: 
+		if(validInput == 1):
+			accept = 0;	
+			if(cs in dpda['acceptStates']):
+				accept = 1
+			if(accept == 1):
+				print "ACCEPT!\n"
+			else: 
+				print "REJECT!\n"
+			
+			
+				
+				
+	
 
 def main(argv):
 	#DPDA is a dictionary. Set it up:
