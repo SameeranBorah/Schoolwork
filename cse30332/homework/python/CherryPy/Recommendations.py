@@ -1,3 +1,5 @@
+#John F. Lake, Jr. 
+#Handler for /recommendations/ and /recommendations/{userID}
 import cherrypy
 from _movie_database import _movie_database
 import json
@@ -6,6 +8,8 @@ import json
 class Recommendations(object):
 
 	@cherrypy.tools.json_in()
+
+	#Setup data
 	def __init__(self,DB):
 		self.API_KEY = 'AAAAAAAB'
 		self.myDB = DB
@@ -13,10 +17,11 @@ class Recommendations(object):
                 self.myDB.load_movies('ml-1m/movies.dat')
                 self.myDB.load_users('ml-1m/users.dat')
                 self.myDB.load_ratings('ml-1m/ratings.dat')
-		self.myDB.load_posters('images.dat')
+		self.myDB.load_posters('ml-1m/images.dat')
 
 	
 	
+	#GET for /recommendations/{userID}
 	def GET(self,id=None):
 		output = {'result':'success'}
 		mov = self.myDB.get_highest_unrated_movie(id)
@@ -28,6 +33,8 @@ class Recommendations(object):
 
 		return json.dumps(output,encoding = 'latin-1')
 
+
+	#PUT for /recommendations/{userID}
 	def PUT(self,id=None):
 		output = {'result':'success'}
 		v = json.loads(cherrypy.request.body.read())
@@ -38,6 +45,7 @@ class Recommendations(object):
 			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
 
+	#DELETE for /recommendations/
 	def DELETE(self):
 		output = {'result':'success'}
 		v = json.loads(cherrypy.request.body.fp.read())

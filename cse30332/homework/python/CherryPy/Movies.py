@@ -1,3 +1,7 @@
+#John F. Lake, Jr. 
+#This is the handler for /movies/, /movies/{movieID}, /reset/, and /reset/{movieID}
+
+
 import cherrypy
 from _movie_database import _movie_database
 import json
@@ -6,6 +10,8 @@ import json
 class Movies(object):
 
 	@cherrypy.tools.json_in()
+
+	#Load in all of the data.
 	def __init__(self,DB):
 		self.API_KEY = 'AAAAAAAB'
 		self.myDB = DB
@@ -13,10 +19,11 @@ class Movies(object):
                 self.myDB.load_movies('ml-1m/movies.dat')
                 self.myDB.load_users('ml-1m/users.dat')
                 self.myDB.load_ratings('ml-1m/ratings.dat')
-		self.myDB.load_posters('images.dat')
+		self.myDB.load_posters('ml-1m/images.dat')
 
 	
 	
+	#GET for /movies/{movieID}; returns the info about that movie
 	def GET(self,id=None):
 		output = {'result':'success'}
 		mov = self.myDB.get_movie(id)
@@ -31,6 +38,7 @@ class Movies(object):
 
 		return json.dumps(output,encoding = 'latin-1')
 
+	#PUT for /movies/{movieID}; changes that movie
 	def PUT(self,id=None):
 		output = {'result':'success'}
 		v = json.loads(cherrypy.request.body.read())
@@ -42,6 +50,9 @@ class Movies(object):
 		else:
 			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
+
+
+	#GET for /movies/; returns info about all of the movies
 	def GET_ALL(self):
 		output = {'result':'success'}
 		output['movies'] = []
@@ -56,6 +67,8 @@ class Movies(object):
 				output['movies'].append(info)
 		return json.dumps(output,encoding = 'latin-1')
 
+
+	#POST for /movies/; adds a movie
 	def POST(self):
 		output = {'result':'success'}
 		v = json.loads(cherrypy.request.body.read())
@@ -70,6 +83,7 @@ class Movies(object):
 		return json.dumps(output,encoding = 'latin-1')
 
 
+	#DELETE for /movies/{movieID}; deletes that movie
 	def DELETE(self,id):
 		
 		v = json.loads(cherrypy.request.body.fp.read())
@@ -80,6 +94,8 @@ class Movies(object):
 			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
 
+	
+	#DELETE for /movies/; deletes all of the movies
 	def DELETE_ALL(self):
 		output = {'result':'success'}
 
@@ -93,6 +109,7 @@ class Movies(object):
 
 		return json.dumps(output,encoding = 'latin-1')
 
+	#PUT for /reset/{movieID}; Resets that movie
 	def RESET(self,id):
 		v = json.loads(cherrypy.request.body.fp.read())
 		output = {'result':'success'}
@@ -101,6 +118,10 @@ class Movies(object):
 		else:
 			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
+
+
+
+	#PUT for /reset/; resets all of the data
 	def RESET_ALL(self):
 		v = json.loads(cherrypy.request.body.fp.read())
 		output = {'result':'success'}
@@ -109,7 +130,7 @@ class Movies(object):
 			self.myDB.load_movies('ml-1m/movies.dat')
 			self.myDB.load_users('ml-1m/users.dat')
 			self.myDB.load_ratings('ml-1m/ratings.dat')
-			self.myDB.load_posters('images.dat')
+			self.myDB.load_posters('ml-1m/images.dat')
 		else:
 			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')

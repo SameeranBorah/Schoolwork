@@ -1,3 +1,5 @@
+#John F. Lake, Jr. 
+#Handler for /users/ and /users/{userID}
 import cherrypy
 from _movie_database import _movie_database
 import json
@@ -6,6 +8,8 @@ import json
 class Users(object):
 
 	@cherrypy.tools.json_in()
+
+	#Setup data
 	def __init__(self,DB):
 		self.API_KEY = 'AAAAAAAB'
 		self.myDB = DB
@@ -13,10 +17,10 @@ class Users(object):
                 self.myDB.load_movies('ml-1m/movies.dat')
                 self.myDB.load_users('ml-1m/users.dat')
                 self.myDB.load_ratings('ml-1m/ratings.dat')
-		self.myDB.load_posters('images.dat')
+		self.myDB.load_posters('ml-1m/images.dat')
 
 	
-	
+	#GET for /users/{userID}
 	def GET(self,id=None):
 		output = {'result':'success'}
 		usr = self.myDB.get_user(id)
@@ -32,6 +36,7 @@ class Users(object):
 
 		return json.dumps(output,encoding = 'latin-1')
 
+	#PUT for /users/{userID}
 	def PUT(self,id=None):
 		output = {'result':'success'}
 		v = json.loads(cherrypy.request.body.read())
@@ -43,6 +48,9 @@ class Users(object):
 		info.append(v['occupation'])
 		self.myDB.set_user(id,info)
 		return json.dumps(output,encoding = 'latin-1')
+
+
+	#GET for /users/
 	def GET_ALL(self):
 		output = {'result':'success'}
 		output['users'] = []
@@ -57,7 +65,8 @@ class Users(object):
 			if usr is not None:
 				output['users'].append(info)
 		return json.dumps(output,encoding = 'latin-1')
-
+	
+	#POST for /users/
 	def POST(self):
 		output = {'result':'success'}
 		v = json.loads(cherrypy.request.body.read())
@@ -73,6 +82,8 @@ class Users(object):
 			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
 
+
+	#DELETE for /users/{userID}
 	def DELETE(self,id):
 		
 		v = json.loads(cherrypy.request.body.fp.read())
@@ -83,6 +94,7 @@ class Users(object):
 			output['result'] = 'failure'
 		return json.dumps(output,encoding = 'latin-1')
 
+	#DELETE for /users/
 	def DELETE_ALL(self):
 		output = {'result':'success'}
 

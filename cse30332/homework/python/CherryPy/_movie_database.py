@@ -71,6 +71,9 @@ class _movie_database:
 			return mo[1:]
 		else:
 			return None
+
+
+	#Adds a movie to the database
 	def add_movie(self,info):
 		movVals = self.movies.values()
 		ids = []
@@ -102,6 +105,8 @@ class _movie_database:
 		if str(movieID) in self.movies.keys():
 			del self.movies[str(movieID)]
 
+
+	#Adds a user to the database
 	def add_user(self,info):
 		usrVals = self.users.values()
 		ids = []
@@ -225,6 +230,8 @@ class _movie_database:
 	
 		return lowestMid	
 			
+
+	#looks through the movies the user has NOT rated and returns the one with the highest ratings.  Ties go to lower movie ID. 
 	def get_highest_unrated_movie(self,userID):
 
 		unratedMovies = []

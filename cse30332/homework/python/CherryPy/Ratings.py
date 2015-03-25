@@ -1,3 +1,5 @@
+#John F. Lake, Jr. 
+#Handler for /ratings/
 import cherrypy
 from _movie_database import _movie_database
 import json
@@ -6,6 +8,9 @@ import json
 class Ratings(object):
 
 	@cherrypy.tools.json_in()
+
+
+	#Setup data
 	def __init__(self,DB):
 		self.API_KEY = 'AAAAAAAB'
 		self.myDB = DB
@@ -13,9 +18,10 @@ class Ratings(object):
                 self.myDB.load_movies('ml-1m/movies.dat')
                 self.myDB.load_users('ml-1m/users.dat')
                 self.myDB.load_ratings('ml-1m/ratings.dat')
-		self.myDB.load_posters('images.dat')
+		self.myDB.load_posters('ml-1m/images.dat')
 	
 	
+	#GET for /ratings/
 	def GET(self,id=None):
 		output = {'result':'success'}
 		mov = self.myDB.get_rating(id)
