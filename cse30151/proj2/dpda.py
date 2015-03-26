@@ -134,14 +134,15 @@ def processInput(dpda):
 			#The transition is applicable to the state we are in: 
 			if trans[0] == cs:
 				if trans[1] == 'e' and trans[2] == 'e':
+					stack.reverse()
 					print cs+"; "+trans[1]+"; "+trans[2]+"; "+trans[3]+"; "+",".join(stack)+trans[4]
+					stack.reverse()
 					cs = trans[3]
 					if trans[4] is not 'e':
 						stack.append(trans[4])
 			
 
 		for input in inputTape:
-
 			if input in dpda['alphabet']:
 				for key in dpda['transitions']:
 
@@ -155,19 +156,21 @@ def processInput(dpda):
 							cs = trans[3]
 							if trans[4] is not 'e':
 								stack.append(trans[4])
+								stack.reverse()
 								print cs+"; "+trans[1]+"; "+trans[2]+"; "+trans[3]+"; "+",".join(stack)
-								print "PUSHING " + str(trans[4]) + " ON THE STACK"
+								stack.reverse()
 	
 
 						#Doesn't matter what's on the stack: 
 						elif trans[2] == 'e':
 							if trans[1] == input:
 								cs = trans[3]
-								
 								if trans[4] is not 'e':
 									stack.append(trans[4])
+								stack.reverse()
 								print cs+"; "+trans[1]+"; "+trans[2]+"; "+trans[3]+"; "+",".join(stack)
-								print "PUSHING " + str(trans[4]) + " ON THE STACK"
+								stack.reverse()
+								break
 		
 						#Doesn't matter what the input is
 						elif trans[1] == 'e':
@@ -176,12 +179,23 @@ def processInput(dpda):
 								cs = trans[3]
 								if trans[4] is not 'e':
 									stack.append(trans[4])
-								print csr+"; "+trans[1]+"; "+trans[2]+"; "+trans[3]+"; "+",".join(stack)
-								print "PUSHING " + str(trans[4]) + " ON THE STACK"
-								
-								
-			
-								
+								stack.reverse()
+								print cs+"; "+trans[1]+"; "+trans[2]+"; "+trans[3]+"; "+",".join(stack)
+								stack.reverse()
+								break
+							else:
+								stack.append(stackTop)
+						
+				
+						else:
+							stackTop = stack.pop()
+							if trans[2] == stackTop and trans[1] == input:
+								cs = trans[3]
+								if trans[4] is not 'e':
+									stack.append(trans[4])
+								stack.reverse()
+								print cs+"; "+trans[1]+"; "+trans[2]+"; "+trans[3]+"; "+",".join(stack)
+								stack.reverse()
 							else:
 								stack.append(stackTop)
 			else: 
