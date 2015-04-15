@@ -8,9 +8,42 @@ class Earth(pygame.sprite.Sprite):
 	def __init__(self,gs=None):
 		pygame.sprite.Sprite.__init__(self)
 		self.gs = gs
+		self.health = 100
 		self.image = pygame.image.load("globe.png")
+		self.redImage = pygame.image.load("globe_red100.png")
+		self.explodeImages = []
+		self.expFrame = 0
+		self.isAlive = 1
+		for i in range(0,17):
+			if i < 10:
+				self.ex = pygame.image.load("explosion/frames00%da.png" % i)
+			else:
+				self.ex = pygame.image.load("explosion/frames0%da.png" % i)
+
+			self.explodeImages.append(self.ex)
+				
+		self.expRect = self.explodeImages[0].get_rect()
+		self.expRect = self.expRect.move(400,300)
 		self.rect = self.image.get_rect()
 		self.rect = self.rect.move(300,300)
+		self.redRect = self.redImage.get_rect()
+		self.redRect = self.redRect.move(300,300)
+
+	def tick(self):
+		if self.health <=0:
+			self.image = self.explodeImages[self.expFrame]
+			self.expFrame = self.expFrame +1
+			if self.expFrame > 15:
+				self.expFrame = 0
+				self.isAlive = 0
+		
+	
+			
+
+
+
+
+
 
 
 
@@ -78,7 +111,6 @@ class Player(pygame.sprite.Sprite):
 				self.laserX = self.laserrect.x
 				self.laserY = self.laserrect.y
 				self.laserDX = (self.laserdestX-self.laserX)/20
-
 				self.laserDY = (self.laserdestY-self.laserY)/20
 
 			elif event.type is pygame.MOUSEBUTTONUP:
@@ -87,8 +119,16 @@ class Player(pygame.sprite.Sprite):
 
 		if self.tofire == True:
 			#emit laser beam: 
-			
 			self.laserrect = self.laserrect.move(self.laserDX,self.laserDY)
+			if self.laserrect.x>640:
+				self.laserrect.x = 640
+			elif self.laserrect.x<0:
+				self.laserrect.x = 0
+			if self.laserrect.y>480:
+				self.laserrect.y = 480
+			elif self.laserrect.y<0:
+				self.laserrect.y = 0
+
 			self.shootSound.play()
 		else:
 
@@ -115,6 +155,7 @@ class GameSpace:
 		#Initialize everything:
 		pygame.init()
 		pygame.mixer.init()
+		explodeSound = pygame.mixer.Sound("explode.wav")
 		self.size = self.width,self.height=640,480
 		self.black = 0,0,0
 		self.screen = pygame.display.set_mode(self.size)
@@ -128,12 +169,35 @@ class GameSpace:
 			self.player.tick()
 			self.screen.fill(self.black)
 			self.screen.blit(self.player.image,self.player.rect)
+
+
 			while self.player.tofire is True:
 				self.screen.blit(self.player.laser,self.player.laserrect)
-				self.screen.blit(self.earth.image,self.earth.rect)
+				if self.earth.health >= 50:
+					self.screen.blit(self.earth.image,self.earth.rect)
+				elif self.earth.health >=0:
+					self.screen.blit(self.earth.redImage,self.earth.redRect)
 				self.player.tick()
+				if self.player.laserrect.colliderect(self.earth.rect):
+					self.earth.health = self.earth.health -1
 				pygame.display.flip()
-			self.screen.blit(self.earth.image,self.earth.rect)
+				if self.earth.health <=0 and self.earth.isAlive:
+					explodeSound.play()
+					self.screen.fill(self.black)
+					self.screen.blit(self.player.image,self.player.rect)
+					self.screen.blit(self.player.laser,self.player.laserrect)
+					self.screen.blit(self.earth.image,self.earth.expRect)
+					pygame.display.flip()
+					self.earth.tick()
+
+			
+			if self.earth.health >= 50:
+				self.screen.blit(self.earth.image,self.earth.rect)
+			elif self.earth.health >=0:
+				self.screen.blit(self.earth.redImage,self.earth.redRect)
+			elif self.earth.isAlive:
+				self.screen.blit(self.earth.image,self.earth.expRect)
+			self.earth.tick()
 			pygame.display.flip()
 
 
