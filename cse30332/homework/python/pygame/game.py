@@ -19,9 +19,7 @@ class Earth(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
 	def __init__(self,gs=None):
 		pygame.sprite.Sprite.__init__(self)
-		self.shootSound = pygame.mixer.Sound("explode.wav")
-		print self.shootSound.get_length()
-		self.shootSound.play()
+		self.shootSound = pygame.mixer.Sound("screammachine.wav")
 		self.gs = gs
 		self.image = pygame.image.load("deathstar.png")
 		self.rect = self.image.get_rect()
