@@ -38,16 +38,42 @@ how to use the page table and disk interfaces.
 
 
 
+
 //Frame table to keep track of open frames.  
 typedef struct ft{
 	int numFrames;
 	int method; 
 	int * frames; 
-	int full = 0;
+	int * pages;
+	int full;
 } frame_table;
 
 //Global because I can't edit the other file and need to pass this to the page_fault_handler function
 frame_table f_table;
+
+void print_frame_table(void){
+	printf("The number of frames to use is %d\n",f_table.numFrames);
+	printf("The method to use is %d\n",f_table.method);
+	int i;
+	printf("Frame allocation:\n");
+	for (i = 0;i<f_table.numFrames;i++)
+		printf("Frame,Page %d: [%d] [%d]\n",i,f_table.frames[i],f_table.pages[i]);
+		
+
+}
+
+void print_page_table(struct page_table *pt){
+	int i; 
+	
+	for(i = 0; i < f_table.numFrames; i++){
+		int *frame = malloc(sizeof(int));
+		int *bits = malloc(sizeof(int));
+		page_table_get_entry(pt,i,frame,bits);
+		printf("Page %d:  Maps to frame:  %d   Bits:   %d\n",i,*frame,*bits);
+		free(frame);
+		free(bits);
+	}
+}
 
 
 
@@ -58,17 +84,38 @@ void page_fault_handler( struct page_table *pt, int page )
 
 	//Function usage: 
 	//page_table_set_entry(pagetable, pageNumber, frameNumber, write/read stuff):
+	page_table_set_entry(pt,page,page,PROT_READ|PROT_WRITE);
+	return;
 	
+
+		
 
 	//Depending on the page replacement method, behave a certain way: 
 	switch(f_table.method){
+
+
+		
 		case RAND:;
 			long randomNumber = lrand48() % f_table.numFrames;
 			#ifdef DEBUG
 			printf("Using random method...\n");
 			printf("Random number: %lu\n",randomNumber);
-			
 			#endif
+			if(f_table.full){
+
+			}else{
+				while(f_table.frames[randomNumber]==1){
+					#ifdef DEBUG
+					printf("Frame %lu is full!\n",randomNumber);
+					#endif
+					randomNumber = lrand48() % f_table.numFrames;
+				}
+				//It's empty, so place it there: 
+				page_table_set_entry(pt,page,randomNumber,PROT_READ|PROT_WRITE);
+				f_table.frames[randomNumber] = 1;
+				f_table.pages[randomNumber] = page;
+
+			}
 			
 			break;
 		case FIFO: 
@@ -82,8 +129,11 @@ void page_fault_handler( struct page_table *pt, int page )
 			#endif
 			break;
 	}
-	page_table_set_entry(pt,page,page,PROT_READ|PROT_WRITE);
-	//exit(1);
+	#ifdef DEBUG
+		print_page_table(pt);
+		print_frame_table();
+	#endif
+
 }
 
 int main( int argc, char *argv[] )
@@ -103,11 +153,13 @@ int main( int argc, char *argv[] )
 	int npages = atoi(argv[1]);
 	int nframes = atoi(argv[2]);
 	f_table.numFrames = nframes;
+	f_table.full = 0;
 
-	//Allocate the frame table:
+	//Allocate the frame table, and the tables for the read/write bits:
 	f_table.frames = malloc(sizeof(int)*f_table.numFrames);
 	memset(f_table.frames,0,sizeof(f_table.frames));
-
+	f_table.pages = malloc(sizeof(int)*f_table.numFrames);
+	memset(f_table.pages,0,sizeof(f_table.pages));
 
 	//Get the method for the page replacement, with a default of random. 
 	const char *method = argv[3];
@@ -122,14 +174,6 @@ int main( int argc, char *argv[] )
 		f_table.method = RAND;
 	}
 
-	#ifdef DEBUG
-	printf("The number of frames to use is %d\n",f_table.numFrames);
-	printf("The method to use is %d\n",f_table.method);
-	int i;
-	printf("Frame allocation:\n");
-	for (i = 0;i<f_table.numFrames;i++)
-		printf("Page %d: [%d]\n",i,f_table.frames[i]);
-	#endif
 
 	//Get the program to execute (sort, scan, or focus):
 	const char *program = argv[4];
@@ -144,6 +188,7 @@ int main( int argc, char *argv[] )
 
 	//Create a new page table, with an error message if there is a problem:
 	struct page_table *pt = page_table_create( npages, nframes, page_fault_handler );
+	
 	if(!pt) {
 		fprintf(stderr,"couldn't create page table: %s\n",strerror(errno));
 		return 1;
@@ -167,6 +212,8 @@ int main( int argc, char *argv[] )
 
 	page_table_delete(pt);
 	disk_close(disk);
+	free(f_table.frames);
+	free(f_table.pages);
 
 	return 0;
 }
