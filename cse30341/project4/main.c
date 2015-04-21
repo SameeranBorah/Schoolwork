@@ -42,97 +42,103 @@ how to use the page table and disk interfaces.
 //Frame table to keep track of open frames.  
 typedef struct ft{
 	int numFrames;
+	int numPages;
 	int method; 
-	int * frames; 
-	int * pages;
+
+	//Each entry in this array is the page that maps to it
+	int * framesToPages; 
+	int * pagesToFrames;
+	int * pagesWritten;
+
 	int full;
+	int frameOn;
 } frame_table;
 
 //Global because I can't edit the other file and need to pass this to the page_fault_handler function
 frame_table f_table;
+struct disk *disk = NULL; 
+
+
 
 void print_frame_table(void){
-	printf("The number of frames to use is %d\n",f_table.numFrames);
-	printf("The method to use is %d\n",f_table.method);
 	int i;
 	printf("Frame allocation:\n");
 	for (i = 0;i<f_table.numFrames;i++)
-		printf("Frame,Page %d: [%d] [%d]\n",i,f_table.frames[i],f_table.pages[i]);
-		
-
+		printf("Frame, Page,Page Written: [%d] [%d] [%d]\n",i,f_table.framesToPages[i],f_table.pagesWritten[f_table.framesToPages[i]]);
 }
 
 void print_page_table(struct page_table *pt){
 	int i; 
-	
-	for(i = 0; i < f_table.numFrames; i++){
-		int *frame = malloc(sizeof(int));
-		int *bits = malloc(sizeof(int));
+	int *frame = malloc(sizeof(int));
+	int *bits = malloc(sizeof(int));
+	for(i = 0; i < f_table.numPages; i++){
 		page_table_get_entry(pt,i,frame,bits);
-		printf("Page %d:  Maps to frame:  %d   Bits:   %d\n",i,*frame,*bits);
-		free(frame);
-		free(bits);
+		printf("Page %d:  Maps to frame:  %d   Bits:   %d  Written:%d\n",i,*frame,*bits,f_table.pagesWritten[i]);
 	}
+	free(bits);
+	free(frame);
 }
 
+number = 0;
+void page_fault_handler( struct page_table *pt, int page ){
+	char *physmem = page_table_get_physmem(pt);
+	int *frame = malloc(sizeof(int));
+	int *bits = malloc(sizeof(int));
 
-
-
-void page_fault_handler( struct page_table *pt, int page )
-{
-	printf("page fault on page #%d\n",page);
-
-	//Function usage: 
-	//page_table_set_entry(pagetable, pageNumber, frameNumber, write/read stuff):
-	page_table_set_entry(pt,page,page,PROT_READ|PROT_WRITE);
-	return;
-	
-
-		
-
-	//Depending on the page replacement method, behave a certain way: 
-	switch(f_table.method){
-
-
-		
-		case RAND:;
-			long randomNumber = lrand48() % f_table.numFrames;
-			#ifdef DEBUG
-			printf("Using random method...\n");
-			printf("Random number: %lu\n",randomNumber);
-			#endif
-			if(f_table.full){
-
-			}else{
-				while(f_table.frames[randomNumber]==1){
-					#ifdef DEBUG
-					printf("Frame %lu is full!\n",randomNumber);
-					#endif
-					randomNumber = lrand48() % f_table.numFrames;
-				}
-				//It's empty, so place it there: 
-				page_table_set_entry(pt,page,randomNumber,PROT_READ|PROT_WRITE);
-				f_table.frames[randomNumber] = 1;
-				f_table.pages[randomNumber] = page;
-
-			}
-			
-			break;
-		case FIFO: 
-			#ifdef DEBUG
-			printf("Using fifo method...\n");
-			#endif
-			break;
-		case CUST:
-			#ifdef DEBUG
-			printf("Using custom method...\n");
-			#endif
-			break;
+	if(f_table.pagesWritten[page] >0){
+	//	print_page_table(pt);
+		page_table_set_entry(pt,page,f_table.pagesToFrames[page],PROT_READ|PROT_WRITE);
 	}
-	#ifdef DEBUG
-		print_page_table(pt);
-		print_frame_table();
-	#endif
+	else if(!f_table.full){
+		//Set the page table entry: 
+		page_table_set_entry(pt,page,f_table.frameOn,PROT_READ);
+		//Read into physical memory from the disk:
+		disk_read(disk,page,&physmem[f_table.frameOn*PAGE_SIZE]);
+		//Manage the frame table: 
+		f_table.framesToPages[f_table.frameOn] = page;
+		//We have written this page
+		f_table.pagesWritten[page] = 1;
+		//Assign frame for that page: 
+		f_table.pagesToFrames[page] = f_table.frameOn;
+		//Find out if the table is full yet: 
+		if(f_table.frameOn >= f_table.numFrames-1)
+			f_table.full = 1;
+		else
+			f_table.frameOn++;
+	}else{
+		//Depending on the page replacement method, behave a certain way: 
+		switch(f_table.method){
+			case RAND:;
+				//Get the random number mod the number of frames
+				int repFrame = (int) lrand48() % f_table.numFrames;
+				int p = f_table.framesToPages[repFrame];
+				page_table_get_entry(pt,p,frame,bits);
+
+				//If it's dirty, wirte it to disk
+				if(*bits == 3) //3 meaning it has write privileges
+					disk_write(disk,p,&physmem[(*frame)*PAGE_SIZE]);
+				
+				//Read the new page into the frame
+				disk_read(disk,page,&physmem[(*frame)*PAGE_SIZE]);
+				//Set the page table: 
+				page_table_set_entry(pt,page,*frame,PROT_READ);
+				page_table_set_entry(pt,p,*frame,0);
+				//Set the frame table
+				f_table.framesToPages[*frame] = page;
+				f_table.pagesToFrames[page] = *frame;
+				f_table.pagesToFrames[p] = -1;
+				f_table.pagesWritten[page] = 1;
+				f_table.pagesWritten[p] = 0;
+				break;
+			case FIFO: 
+				break;
+			case CUST:
+				break;
+		}
+	}
+	//Free our variables
+	free(frame);
+	free(bits);
 
 }
 
@@ -153,13 +159,17 @@ int main( int argc, char *argv[] )
 	int npages = atoi(argv[1]);
 	int nframes = atoi(argv[2]);
 	f_table.numFrames = nframes;
+	f_table.numPages = npages;
 	f_table.full = 0;
+	f_table.frameOn = 0;
 
 	//Allocate the frame table, and the tables for the read/write bits:
-	f_table.frames = malloc(sizeof(int)*f_table.numFrames);
-	memset(f_table.frames,0,sizeof(f_table.frames));
-	f_table.pages = malloc(sizeof(int)*f_table.numFrames);
-	memset(f_table.pages,0,sizeof(f_table.pages));
+	f_table.framesToPages = (int*) malloc(sizeof(int)*f_table.numPages);
+	memset(f_table.framesToPages,0,sizeof(f_table.framesToPages));
+	f_table.pagesWritten = (int*) malloc(sizeof(int)*f_table.numPages);
+	memset(f_table.pagesWritten,0,sizeof(f_table.pagesWritten));
+	f_table.pagesToFrames = (int*) malloc(sizeof(int)*f_table.numPages);
+	memset(f_table.pagesToFrames,-1,sizeof(f_table.pagesToFrames));
 
 	//Get the method for the page replacement, with a default of random. 
 	const char *method = argv[3];
@@ -179,7 +189,7 @@ int main( int argc, char *argv[] )
 	const char *program = argv[4];
 
 	//Create a new virtual disk, with an error message if there is a problem:
-	struct disk *disk = disk_open("myvirtualdisk",npages);
+	disk = disk_open("myvirtualdisk",npages);
 	if(!disk) {
 		fprintf(stderr,"couldn't create virtual disk: %s\n",strerror(errno));
 		return 1;
@@ -195,25 +205,22 @@ int main( int argc, char *argv[] )
 	}
 
 	char *virtmem = page_table_get_virtmem(pt);
-	char *physmem = page_table_get_physmem(pt);
-
+	
 	if(!strcmp(program,"sort")) {
 		sort_program(virtmem,npages*PAGE_SIZE);
-
 	} else if(!strcmp(program,"scan")) {
 		scan_program(virtmem,npages*PAGE_SIZE);
-
 	} else if(!strcmp(program,"focus")) {
 		focus_program(virtmem,npages*PAGE_SIZE);
-
 	} else {
 		fprintf(stderr,"unknown program: %s\n",argv[4]);
 	}
 
 	page_table_delete(pt);
 	disk_close(disk);
-	free(f_table.frames);
-	free(f_table.pages);
+	free(f_table.framesToPages);
+	free(f_table.pagesWritten);
+	free(f_table.pagesToFrames);
 
 	return 0;
 }
