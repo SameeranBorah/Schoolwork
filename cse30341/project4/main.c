@@ -12,32 +12,20 @@ The header files page_table.h and disk.h explain
 how to use the page table and disk interfaces.
 */
 
-#define DEBUG 1
-
 #include "page_table.h"
 #include "disk.h"
 #include "program.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <errno.h>
 
-
-
 //For the different page-replacement methods:
 #define RAND 0
 #define FIFO 1
 #define CUST 2
-
-
-//to tell if frames are empty or full: 
-#define FREE 0
-#define FULL 1
-
-
-
+#define MAX 50000
 
 //Frame table to keep track of open frames.  
 typedef struct ft{
@@ -62,32 +50,13 @@ int diskReads = 0;
 int diskWrites = 0;
 int pageFaults = 0;
 struct disk *disk = NULL; 
-int * fifoStack= NULL;
+int * fifoQueue = NULL;
 int customI =0;
 int goDown = 0;
 
 
-
-void print_frame_table(void){
-	int i;
-	printf("Frame allocation:\n");
-	for (i = 0;i<f_table.numFrames;i++)
-		printf("Frame, Page,Page Written: [%d] [%d] [%d]\n",i,f_table.framesToPages[i],f_table.pagesWritten[f_table.framesToPages[i]]);
-}
-
-void print_page_table(struct page_table *pt){
-	int i; 
-	int *frame = malloc(sizeof(int));
-	int *bits = malloc(sizeof(int));
-	for(i = 0; i < f_table.numPages; i++){
-		page_table_get_entry(pt,i,frame,bits);
-		printf("Page %d:  Maps to frame:  %d   Bits:   %d  Written:%d\n",i,*frame,*bits,f_table.pagesWritten[i]);
-	}
-	free(bits);
-	free(frame);
-}
-
 void page_fault_handler( struct page_table *pt, int page ){
+	//increment the number of Page faults: 
 	pageFaults++;
 	char *physmem = page_table_get_physmem(pt);
 	int *frame = malloc(sizeof(int));
@@ -100,6 +69,7 @@ void page_fault_handler( struct page_table *pt, int page ){
 	}
 
 	//Otherwise, check if the table is full
+	//If it's not full, every method fills it up the same way: 
 	else if(!f_table.full){
 		//Set the page table entry and read from the disk:
 		page_table_set_entry(pt,page,f_table.frameOn,PROT_READ);
@@ -110,7 +80,7 @@ void page_fault_handler( struct page_table *pt, int page ){
 		f_table.framesToPages[f_table.frameOn] = page;
 		f_table.pagesWritten[page] = 1;
 		f_table.pagesToFrames[page] = f_table.frameOn;
-		fifoStack[f_table.frameOn] = f_table.frameOn;
+		fifoQueue[f_table.frameOn] = f_table.frameOn;
 
 		//Find out if the table is full yet: 
 		if(f_table.frameOn >= f_table.numFrames-1)
@@ -137,8 +107,6 @@ void page_fault_handler( struct page_table *pt, int page ){
 					disk_write(disk,p,&physmem[(*frame)*PAGE_SIZE]);
 					diskWrites++;
 				}
-				
-				
 				//Read the new page into the frame
 				disk_read(disk,page,&physmem[(*frame)*PAGE_SIZE]);
 				diskReads++;
@@ -155,14 +123,13 @@ void page_fault_handler( struct page_table *pt, int page ){
 
 			//First in, first out method: 
 			case FIFO:; 
-
 				//Get the number of the first frame in the stack
-				repFrame = fifoStack[0];
+				repFrame = fifoQueue[0];
 
 				//move all of the items on the stack
 				for(i = 0;i<f_table.numFrames-1;i++){
-					fifoStack[i] = fifoStack[i+1];
-				} fifoStack[f_table.numFrames-1] = repFrame;
+					fifoQueue[i] = fifoQueue[i+1];
+				} fifoQueue[f_table.numFrames-1] = repFrame;
 
 				//If it's dirty, write to disk
 				p = f_table.framesToPages[repFrame];
@@ -185,23 +152,19 @@ void page_fault_handler( struct page_table *pt, int page ){
 				f_table.pagesWritten[page] = 1;
 				f_table.pagesWritten[p] = 0;
 				break;
-
-
 			//Custom is very simple; just go up and down 
 			//(Increment until max, decrement until zero)
-			case CUST:
-
-				//Get the frame and increment the variable
+			case CUST:;
 				repFrame = customI;
 				if(goDown) 
 					customI--;
 				else
 					customI++;
-				if(customI == f_table.numFrames) 
+				if(customI == f_table.numFrames-1) 
 					goDown = 1;
 				else if (customI==0)
 					goDown = 0;
-				
+		
 				//If it's dirty, write to disk
 				p = f_table.framesToPages[repFrame];
 				page_table_get_entry(pt,p,frame,bits);
@@ -210,7 +173,6 @@ void page_fault_handler( struct page_table *pt, int page ){
 					disk_write(disk,p,&physmem[(*frame)*PAGE_SIZE]);
 					diskWrites++;
 				}
-				
 				//Read the new page into the frame
 				disk_read(disk,page,&physmem[(*frame)*PAGE_SIZE]);
 				diskReads++;
@@ -229,7 +191,6 @@ void page_fault_handler( struct page_table *pt, int page ){
 	//Free our variables
 	free(frame);
 	free(bits);
-
 }
 
 int main( int argc, char *argv[] )
@@ -243,11 +204,18 @@ int main( int argc, char *argv[] )
 		printf("use: virtmem <npages> <nframes> <rand|fifo|custom> <sort|scan|focus>\n");
 		return 1;
 	}
+	
+	
 
 
 	//Get the number of pages and frames from the command line arguments: 
 	int npages = atoi(argv[1]);
 	int nframes = atoi(argv[2]);
+
+	if(npages<2 || nframes <2){
+		printf("The number of frames or pages cannot be less than 2.\n");
+		return 1;
+	}
 	f_table.numFrames = nframes;
 	f_table.numPages = npages;
 	f_table.full = 0;
@@ -261,8 +229,8 @@ int main( int argc, char *argv[] )
 	f_table.pagesToFrames = (int*) malloc(sizeof(int)*f_table.numPages);
 	memset(f_table.pagesToFrames,-1,sizeof(f_table.pagesToFrames));
 
-	fifoStack = malloc(sizeof(int)*f_table.numFrames);
-	memset(fifoStack,-1,sizeof(f_table.numFrames));
+	fifoQueue = malloc(sizeof(int)*f_table.numFrames);
+	memset(fifoQueue,-1,sizeof(f_table.numFrames));
 
 	//Get the method for the page replacement, with a default of random. 
 	const char *method = argv[3];
