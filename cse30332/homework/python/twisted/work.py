@@ -7,19 +7,21 @@ from twisted.internet.protocol import Protocol
 from twisted.internet import reactor
 
 
-class MyConn(Protocol):
+class Command(Protocol):
 	def dataReceived(self,data):
 		print data
 	def connectionMade(self):
 		print "Connected!!!"
-		self.transport.write("You've connected!")
+		self.transport.write("This is from your work.!\r\n")
 	def connectionLost(self,data):
 		print "lost 'em"
 
-class MyConnFactory(ClientFactory):
+class CommandFactory(ClientFactory):
 	def buildProtocol(self,addr):
-		return MyConn()
+		return Command()
 
 
-reactor.connectTCP('student00.cse.nd.edu',9001,MyConnFactory())
+#Connect on the command port
+reactor.connectTCP('student00.cse.nd.edu',9001,CommandFactory())
+reactor.connectTCP
 reactor.run()
