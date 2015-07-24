@@ -3,6 +3,8 @@ This is a repository for my coursework at the University of Notre Dame.
 
 
 Courses Taken: 
+
+
 CSE 20211: Fundamentals of Computing I (C Focused)
 
 
