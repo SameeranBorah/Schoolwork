@@ -2,7 +2,7 @@
 This is a repository for my coursework at the University of Notre Dame.
 
 
-Courses: 
+Courses Taken: 
 CSE 20211: Fundamentals of Computing I (C Focused)
 CSE 20212: Fundamentals of Computing II (C++, OOP Focused)
 CSE 20189: Unix for Engineers (Covered Unix commands and tools (awk, sed, grep), as well as scripting (bash, csh, perl))
